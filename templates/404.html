@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}404 | {{ company.name_en }}{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero--404">
+  <div class="page-hero__bg" aria-hidden="true"><div class="hero__grid"></div><div class="hero__glow hero__glow--a"></div></div>
+  <div class="container page-hero__inner">
+    <p class="eyebrow reveal">404</p>
+    <h1 class="page-title reveal" data-delay="80">{{ t.not_found.title }}</h1>
+    <p class="page-desc reveal" data-delay="160">{{ t.not_found.desc }}</p>
+    <div class="reveal" data-delay="220">
+      <a href="{{ u('index') }}" class="btn btn--primary btn--lg magnetic">{{ t.not_found.home }}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

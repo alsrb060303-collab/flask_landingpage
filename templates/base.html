@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="{{ 'ko' if lang == 'ko' else 'en' }}" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070B14">
+
+{% set meta = t.meta.get(current_endpoint) or t.meta.index %}
+<title>{% block title %}{{ meta[0] }}{% endblock %}</title>
+<meta name="description" content="{% block description %}{{ meta[1] }}{% endblock %}">
+<meta name="author" content="{{ company.name_en }}">
+<link rel="canonical" href="{{ company.site_url }}{{ request.path }}">
+<link rel="alternate" hreflang="{{ 'en' if lang == 'ko' else 'ko' }}" href="{{ company.site_url }}{{ switch_url() }}">
+<link rel="alternate" hreflang="{{ lang }}" href="{{ company.site_url }}{{ request.path }}">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ company.name_en }}">
+<meta property="og:locale" content="{{ t.locale }}">
+<meta property="og:title" content="{{ meta[0] }}">
+<meta property="og:description" content="{{ meta[1] }}">
+<meta property="og:url" content="{{ company.site_url }}{{ request.path }}">
+<meta property="og:image" content="{{ company.site_url }}{{ url_for('static', filename='images/og-image.jpg') }}">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" as="style" crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "{{ company.name_en }}",
+  "alternateName": "{{ company.name_ko }}",
+  "url": "{{ company.site_url }}",
+  "email": "{{ company.email }}",
+  "telephone": "{{ company.phone }}",
+  "foundingDate": "{{ company.founded }}",
+  "founder": {"@type": "Person", "name": "{{ company.ceo_en }}"},
+  "address": {"@type": "PostalAddress", "streetAddress": "{{ company.address_en }}", "addressCountry": "KR"}
+}
+</script>
+</head>
+
+<body class="page--{{ current_endpoint }}" data-lang="{{ lang }}">
+
+<a class="skip-link" href="#main">{{ '본문 바로가기' if lang == 'ko' else 'Skip to content' }}</a>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a href="{{ u('index') }}" class="logo" aria-label="{{ company.name_en }} home">
+      <span class="logo__mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M7 6v11a9 9 0 0 0 18 0V6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+          <circle cx="16" cy="16.5" r="2.4" fill="currentColor"/>
+        </svg>
+      </span>
+      <span class="logo__text">{{ company.name_en }}</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="{{ '주 메뉴' if lang == 'ko' else 'Main navigation' }}">
+      {% for key, label in t.nav %}
+      <a href="{{ u(key) }}" class="nav__link {{ 'is-active' if current_endpoint == key or (key == 'services' and current_endpoint == 'service_detail') }}">
+        <span>{{ label }}</span>
+      </a>
+      {% endfor %}
+      <div class="nav__mobile-extra">
+        <a href="{{ switch_url() }}" class="lang-switch" hreflang="{{ other_lang }}">{{ t.switch_label }}</a>
+        <a href="{{ u('contact') }}" class="btn btn--primary btn--sm">{{ t.cta_nav }}</a>
+      </div>
+    </nav>
+
+    <div class="header__actions">
+      <a href="{{ switch_url() }}" class="lang-switch" hreflang="{{ other_lang }}" aria-label="{{ t.switch_aria }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.6"/><path d="M3.4 12h17.2M12 3.4a13 13 0 0 1 0 17.2 13 13 0 0 1 0-17.2"/>
+        </svg>
+        {{ t.switch_label }}
+      </a>
+      <a href="{{ u('contact') }}" class="btn btn--primary btn--sm header__cta">{{ t.cta_nav }}</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="header__progress" id="scrollProgress" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="logo logo--footer">
+          <span class="logo__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none"><path d="M7 6v11a9 9 0 0 0 18 0V6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="16.5" r="2.4" fill="currentColor"/></svg>
+          </span>
+          <span class="logo__text">{{ company.name_en }}</span>
+        </span>
+        <p class="footer__tagline">{{ t.footer.tagline }}</p>
+      </div>
+
+      <div class="footer__cols">
+        <div class="footer__col">
+          <h3>{{ t.footer.nav_title }}</h3>
+          <ul>
+            {% for s in services %}
+            <li><a href="{{ u('service_detail', slug=s.slug) }}">{{ s[lang].name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3>{{ t.footer.company_title }}</h3>
+          <ul>
+            <li><a href="{{ u('about') }}">{{ t.nav[1][1] }}</a></li>
+            <li><a href="{{ u('insights') }}">{{ t.nav[2][1] }}</a></li>
+            <li><a href="{{ u('careers') }}">{{ t.nav[3][1] }}</a></li>
+            <li><a href="{{ u('security') }}">{{ t.footer.security_link }}</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3>{{ t.footer.contact_title }}</h3>
+          <ul>
+            <li><a href="mailto:{{ company.email }}">{{ company.email }}</a></li>
+            <li><a href="{{ company.phone_href }}">{{ company.phone }}</a></li>
+            <li class="footer__addr">{{ company.address_ko if lang == 'ko' else company.address_en }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>&copy; {{ now.year }} {{ company.name_en }}. {{ t.footer.rights }}</p>
+      <p class="footer__legal">
+        {{ t.about_page.info_labels.ceo }} {{ company.ceo if lang == 'ko' else company.ceo_en }}
+        {% if company.biz_no %}<span class="dot">·</span>{{ t.about_page.info_labels.biz }} {{ company.biz_no }}{% endif %}
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

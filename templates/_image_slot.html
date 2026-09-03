@@ -1,0 +1,18 @@
+{%- if exists -%}
+<figure class="imgslot imgslot--filled {{ classes }}" style="--ratio: {{ ratio }}">
+  <img src="{{ src }}" alt="{{ alt }}" loading="lazy" decoding="async">
+</figure>
+{%- else -%}
+<div class="imgslot imgslot--empty {{ classes }}" style="--ratio: {{ ratio }}" role="img" aria-label="{{ alt }}">
+  <div class="imgslot__inner">
+    <svg class="imgslot__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+      <rect x="3.2" y="4.8" width="17.6" height="14.4" rx="2.4"/>
+      <circle cx="8.6" cy="10" r="1.5"/>
+      <path d="m4.2 17.2 4.6-4.4 3.2 3 3.4-3.6 4.4 5"/>
+    </svg>
+    <p class="imgslot__title">{{ t.img_slot.title }}</p>
+    <code class="imgslot__file">static/images/{{ filename }}</code>
+    {% if note %}<p class="imgslot__note">{{ note }}</p>{% endif %}
+  </div>
+</div>
+{%- endif -%}

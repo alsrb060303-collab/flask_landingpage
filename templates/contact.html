@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% set cp = t.contact_page %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero__bg" aria-hidden="true"><div class="hero__grid"></div><div class="hero__glow hero__glow--a" data-parallax="0.12"></div></div>
+  <div class="container page-hero__inner">
+    <p class="eyebrow reveal">{{ cp.eyebrow }}</p>
+    <h1 class="page-title reveal" data-delay="80">{{ cp.title | replace('\n', '<br>') | safe }}</h1>
+    <p class="page-desc reveal" data-delay="160">{{ cp.desc }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container contact-layout">
+
+    <div class="contact-form-wrap reveal">
+      <h2 class="section-title section-title--sm">{{ cp.form_title }}</h2>
+      <p class="muted small">{{ cp.form_note }}</p>
+
+      <form class="cform" id="contactForm" data-to="{{ company.email }}" novalidate>
+        <div class="field">
+          <input type="text" id="f-company" name="company" required placeholder=" ">
+          <label for="f-company">{{ cp.fields.company }}</label>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <input type="text" id="f-name" name="name" required placeholder=" ">
+            <label for="f-name">{{ cp.fields.name }}</label>
+          </div>
+          <div class="field">
+            <input type="email" id="f-email" name="email" required placeholder=" ">
+            <label for="f-email">{{ cp.fields.email }}</label>
+          </div>
+        </div>
+        <div class="field">
+          <input type="tel" id="f-phone" name="phone" placeholder=" ">
+          <label for="f-phone">{{ cp.fields.phone }}</label>
+        </div>
+        <div class="field field--select">
+          <select id="f-service" name="service" required>
+            <option value="" disabled selected>{{ cp.fields.select }}</option>
+            {% for s in services %}
+            <option value="{{ s[lang].name }}" data-slug="{{ s.slug }}">{{ s[lang].name }}</option>
+            {% endfor %}
+            <option value="{{ cp.fields.other }}">{{ cp.fields.other }}</option>
+          </select>
+          <label for="f-service">{{ cp.fields.service }}</label>
+          <svg class="field__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+        </div>
+        <div class="field">
+          <textarea id="f-message" name="message" rows="6" required placeholder=" "></textarea>
+          <label for="f-message">{{ cp.fields.message }}</label>
+          <p class="field__hint">{{ cp.fields.message_ph }}</p>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--lg magnetic cform__submit">
+          {{ cp.submit }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <aside class="contact-side reveal" data-delay="100">
+      <h2 class="section-title section-title--sm">{{ cp.direct_title }}</h2>
+      <ul class="contact-list">
+        <li>
+          <span class="contact-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M4 7l8 5.5L20 7"/></svg></span>
+          <a href="mailto:{{ company.email }}">{{ company.email }}</a>
+        </li>
+        <li>
+          <span class="contact-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h3l1.5 4-2 2a10.5 10.5 0 0 0 5 5l2-2 4 1.5v3a2 2 0 0 1-2 2C9.5 19 5 14.5 5 5.5a2 2 0 0 1 1.5-2z"/></svg></span>
+          <a href="{{ company.phone_href }}">{{ company.phone }}</a>
+        </li>
+        <li>
+          <span class="contact-list__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
+          <span>{{ company.address_ko if lang == 'ko' else company.address_en }}</span>
+        </li>
+      </ul>
+
+      <dl class="contact-meta">
+        <div><dt>{{ cp.hours_label }}</dt><dd>{{ cp.hours }}</dd></div>
+        <div><dt>{{ cp.response_label }}</dt><dd>{{ cp.response }}</dd></div>
+      </dl>
+
+      {{ image('map.jpg', cp.direct_title, ratio='4 / 3', note=cp.map_note) }}
+    </aside>
+
+  </div>
+</section>
+
+{% endblock %}

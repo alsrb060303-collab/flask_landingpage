@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero__bg" aria-hidden="true"><div class="hero__grid"></div><div class="hero__glow hero__glow--a" data-parallax="0.12"></div></div>
+  <div class="container page-hero__inner">
+    <p class="eyebrow reveal">{{ t.services_page.eyebrow }}</p>
+    <h1 class="page-title reveal" data-delay="80">{{ t.services_page.title }}</h1>
+    <p class="page-desc reveal" data-delay="160">{{ t.services_page.desc }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="svc-list">
+      {% for s in services %}
+      <article class="svc-row reveal">
+        <div class="svc-row__media">
+          {{ image(s.image, s[lang].name, ratio='4 / 3') }}
+        </div>
+        <div class="svc-row__body">
+          <span class="svc-row__no">{{ '%02d' % loop.index }}</span>
+          <h2>{{ s[lang].name }}</h2>
+          <p class="svc-row__tagline">{{ s[lang].tagline }}</p>
+          <p class="svc-row__summary">{{ s[lang].summary }}</p>
+
+          <ul class="chips">
+            {% for std in s[lang].standards %}<li>{{ std }}</li>{% endfor %}
+          </ul>
+
+          <a href="{{ u('service_detail', slug=s.slug) }}" class="btn btn--ghost">
+            {{ t.home_services.more }}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"/></svg>
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section cta-band">
+  <div class="cta-band__bg" aria-hidden="true"><div class="cta-band__glow" data-parallax="0.1"></div></div>
+  <div class="container cta-band__inner reveal">
+    <h2 class="section-title">{{ t.cta.title }}</h2>
+    <p class="section-desc">{{ t.cta.desc }}</p>
+    <div class="cta-band__actions">
+      <a href="{{ u('contact') }}" class="btn btn--primary btn--lg magnetic">{{ t.cta.primary }}</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% set s = service[lang] %}
+{% set idx = services.index(service) %}
+{% set nxt = services[(idx + 1) % (services | length)] %}
+
+{% block title %}{{ s.name }} | {{ company.name_en }}{% endblock %}
+{% block description %}{{ s.summary | truncate(150, true, '…') }}{% endblock %}
+
+{% block content %}
+
+<section class="page-hero page-hero--service">
+  <div class="page-hero__bg" aria-hidden="true"><div class="hero__grid"></div><div class="hero__glow hero__glow--a" data-parallax="0.12"></div></div>
+  <div class="container page-hero__inner">
+    <a href="{{ u('services') }}" class="backlink reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H6m5 5-5-5 5-5"/></svg>
+      {{ t.svc.back }}
+    </a>
+    <h1 class="page-title reveal" data-delay="60">{{ s.name }}</h1>
+    <p class="page-lead reveal" data-delay="120">{{ s.tagline }}</p>
+    <p class="page-desc reveal" data-delay="180">{{ s.summary }}</p>
+
+    <dl class="svc-facts reveal" data-delay="240">
+      <div><dt>{{ t.svc.duration }}</dt><dd>{{ t.svc.duration_value or t.svc.tbd }}</dd></div>
+      <div><dt>{{ t.svc.price }}</dt><dd>{{ t.svc.price_value or t.svc.tbd }}</dd></div>
+      <div><dt>{{ t.svc.standards }}</dt><dd>{{ s.standards | join(' · ') }}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {{ image(service.image, s.name, ratio='21 / 9', classes='reveal') }}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <h2 class="section-title section-title--sm">{{ t.svc.targets }}</h2>
+    </div>
+    <div class="split__main">
+      <ul class="ticklist">
+        {% for item in s.targets %}
+        <li class="reveal" data-delay="{{ loop.index0 * 50 }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19 7"/></svg>
+          <span>{{ item }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Coverage</p>
+      <h2 class="section-title">{{ t.svc.checks }}</h2>
+    </div>
+    <div class="check-grid">
+      {% for name, desc in s.checks %}
+      <div class="check-card reveal" data-delay="{{ loop.index0 * 45 }}">
+        <h3>{{ name }}</h3>
+        <p>{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Process</p>
+      <h2 class="section-title">{{ t.svc.process }}</h2>
+    </div>
+    <ol class="steps">
+      {% for no, title, desc in s.process %}
+      <li class="step reveal" data-delay="{{ loop.index0 * 60 }}">
+        <span class="step__no">{{ no }}</span>
+        <div class="step__body">
+          <h3>{{ title }}</h3>
+          <p>{{ desc }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <h2 class="section-title section-title--sm">{{ t.svc.deliverables }}</h2>
+    </div>
+    <div class="split__main">
+      <ul class="doclist">
+        {% for item in s.deliverables %}
+        <li class="reveal" data-delay="{{ loop.index0 * 50 }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3.5H7.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8z"/><path d="M14 3.5V8h4.5"/></svg>
+          <span>{{ item }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-band">
+  <div class="cta-band__bg" aria-hidden="true"><div class="cta-band__glow" data-parallax="0.1"></div></div>
+  <div class="container cta-band__inner reveal">
+    <h2 class="section-title">{{ t.cta.title }}</h2>
+    <div class="cta-band__actions">
+      <a href="{{ u('contact') }}?service={{ service.slug }}" class="btn btn--primary btn--lg magnetic">{{ t.svc.cta }}</a>
+    </div>
+    <a href="{{ u('service_detail', slug=nxt.slug) }}" class="nextlink">
+      <span>{{ t.svc.next }}</span>
+      <strong>{{ nxt[lang].name }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"/></svg>
+      </strong>
+    </a>
+  </div>
+</section>
+
+{% endblock %}

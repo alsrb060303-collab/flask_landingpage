@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% set cp = t.careers_page %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero__bg" aria-hidden="true"><div class="hero__grid"></div><div class="hero__glow hero__glow--a" data-parallax="0.12"></div></div>
+  <div class="container page-hero__inner">
+    <p class="eyebrow reveal">{{ cp.eyebrow }}</p>
+    <h1 class="page-title reveal" data-delay="80">{{ cp.title }}</h1>
+    <p class="page-desc reveal" data-delay="160">{{ cp.desc }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {{ image('careers.jpg', cp.title, ratio='21 / 9', classes='reveal') }}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Culture</p>
+      <h2 class="section-title">{{ cp.values_title }}</h2>
+    </div>
+    <div class="principle-grid">
+      {% for title, desc in cp['values'] %}
+      <div class="principle reveal" data-delay="{{ loop.index0 * 60 }}">
+        <span class="principle__no">{{ '%02d' % loop.index }}</span>
+        <h3>{{ title }}</h3>
+        <p>{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Openings</p>
+      <h2 class="section-title">{{ cp.openings_title }}</h2>
+    </div>
+
+    {% if openings %}
+    <ul class="job-list">
+      {% for job in openings %}
+      <li class="job reveal" data-delay="{{ loop.index0 * 50 }}">
+        <div class="job__body">
+          <h3>{{ job.title if lang == 'ko' else (job.title_en or job.title) }}</h3>
+          <p class="job__meta">
+            <span>{{ job.type if lang == 'ko' else (job.type_en or job.type) }}</span>
+            <span class="dot">·</span>
+            <span>{{ job.location if lang == 'ko' else (job.location_en or job.location) }}</span>
+          </p>
+          <p class="job__summary">{{ job.summary if lang == 'ko' else (job.summary_en or job.summary) }}</p>
+        </div>
+        <a class="btn btn--ghost btn--sm" href="mailto:{{ company.email }}?subject={{ ('지원 - ' ~ job.title) | urlencode }}">{{ cp.apply }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="empty-state reveal">
+      <span class="empty-state__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7.5" width="17" height="12" rx="2"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><path d="M3.5 12.5h17"/></svg>
+      </span>
+      <h2>{{ cp.empty_title }}</h2>
+      <p>{{ cp.empty_desc }}</p>
+      <a class="btn btn--primary magnetic" href="mailto:{{ company.email }}?subject={{ ('상시 지원 - ' if lang == 'ko' else 'Speculative application - ') | urlencode }}">{{ cp.open_apply }}</a>
+      <code class="blank__path">content.py → OPENINGS</code>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

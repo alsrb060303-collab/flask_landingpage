@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% set ap = t.about_page %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero__bg" aria-hidden="true"><div class="hero__grid"></div><div class="hero__glow hero__glow--a" data-parallax="0.12"></div></div>
+  <div class="container page-hero__inner">
+    <p class="eyebrow reveal">{{ ap.eyebrow }}</p>
+    <h1 class="page-title reveal" data-delay="80">{{ ap.title | replace('\n', '<br>') | safe }}</h1>
+    <p class="page-lead reveal" data-delay="160">{{ ap.lead }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {{ image('about.jpg', ap.title, ratio='21 / 9', classes='reveal') }}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <p class="section-eyebrow">Story</p>
+    </div>
+    <div class="split__main prose">
+      {% for p in ap.body %}
+      <p class="reveal" data-delay="{{ loop.index0 * 60 }}">{{ p }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Principles</p>
+      <h2 class="section-title">{{ ap.principles_title }}</h2>
+    </div>
+    <div class="principle-grid">
+      {% for title, desc in ap.principles %}
+      <div class="principle reveal" data-delay="{{ loop.index0 * 60 }}">
+        <span class="principle__no">{{ '%02d' % loop.index }}</span>
+        <h3>{{ title }}</h3>
+        <p>{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <h2 class="section-title section-title--sm">{{ ap.ceo_title }}</h2>
+    </div>
+    <div class="split__main">
+      <div class="ceo reveal">
+        <div class="ceo__media">{{ image('ceo.jpg', company.ceo, ratio='3 / 4') }}</div>
+        <div class="ceo__body">
+          <h3>{{ company.ceo if lang == 'ko' else company.ceo_en }}</h3>
+          <p class="ceo__role">{{ ap.ceo_role }}</p>
+          {% if ap.ceo_message %}
+            <blockquote class="ceo__quote">{{ ap.ceo_message }}</blockquote>
+          {% else %}
+            {% set slot_note = 'content.py → CONTENT[\'' ~ lang ~ '\'][\'about_page\'][\'ceo_message\']' %}
+            {% include "_blank.html" %}
+          {% endif %}
+          {% if ap.ceo_bio %}<p class="ceo__bio">{{ ap.ceo_bio }}</p>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Team</p>
+      <h2 class="section-title">{{ ap.team_title }}</h2>
+    </div>
+    {% if team %}
+    <div class="team-grid">
+      {% for m in team %}
+      <article class="member reveal" data-delay="{{ loop.index0 * 60 }}">
+        {{ image(m.image, m.name, ratio='1 / 1') }}
+        <h3>{{ m.name if lang == 'ko' else (m.name_en or m.name) }}</h3>
+        <p class="member__role">{{ m.role if lang == 'ko' else (m.role_en or m.role) }}</p>
+        {% if m.certs %}<ul class="chips chips--sm">{% for c in m.certs %}<li>{{ c }}</li>{% endfor %}</ul>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+      {% set slot_note = 'content.py → TEAM' %}
+      {% set slot_desc = ap.team_note %}
+      {% include "_blank.html" %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <h2 class="section-title section-title--sm">{{ ap.certs_title }}</h2>
+    </div>
+    <div class="split__main">
+      {% if certifications %}
+      <ul class="chips chips--lg">
+        {% for c in certifications %}
+        <li>{{ c.name }}{% if c.count and c.count > 1 %} <span class="chips__count">×{{ c.count }}</span>{% endif %}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+        {% set slot_note = 'content.py → CERTIFICATIONS' %}
+        {% set slot_desc = ap.certs_note %}
+        {% include "_blank.html" %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <h2 class="section-title section-title--sm">{{ ap.history_title }}</h2>
+    </div>
+    <div class="split__main">
+      <ol class="timeline">
+        {% for date, label in ap.history %}
+        <li class="reveal" data-delay="{{ loop.index0 * 60 }}"><span class="timeline__date">{{ date }}</span><span class="timeline__label">{{ label }}</span></li>
+        {% endfor %}
+      </ol>
+      <p class="muted small">{{ ap.history_note }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <h2 class="section-title section-title--sm">{{ ap.info_title }}</h2>
+    </div>
+    <div class="split__main">
+      <dl class="infotable reveal">
+        <div><dt>{{ ap.info_labels.legal }}</dt><dd>{{ company.legal_name_ko if lang == 'ko' else company.legal_name_en }}</dd></div>
+        <div><dt>{{ ap.info_labels.ceo }}</dt><dd>{{ company.ceo if lang == 'ko' else company.ceo_en }}</dd></div>
+        <div><dt>{{ ap.info_labels.founded }}</dt><dd>{{ company.founded }}</dd></div>
+        <div><dt>{{ ap.info_labels.address }}</dt><dd>{{ company.address_ko if lang == 'ko' else company.address_en }}</dd></div>
+        <div><dt>{{ ap.info_labels.phone }}</dt><dd><a href="{{ company.phone_href }}">{{ company.phone }}</a></dd></div>
+        <div><dt>{{ ap.info_labels.email }}</dt><dd><a href="mailto:{{ company.email }}">{{ company.email }}</a></dd></div>
+        <div><dt>{{ ap.info_labels.biz }}</dt><dd>{{ company.biz_no or '—' }}</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% set sp = t.security_page %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="page-hero__bg" aria-hidden="true"><div class="hero__grid"></div><div class="hero__glow hero__glow--a" data-parallax="0.12"></div></div>
+  <div class="container page-hero__inner">
+    <p class="eyebrow reveal">{{ sp.eyebrow }}</p>
+    <h1 class="page-title reveal" data-delay="80">{{ sp.title }}</h1>
+    <p class="page-desc reveal" data-delay="160">{{ sp.desc }}</p>
+    <div class="reveal" data-delay="220">
+      <a class="btn btn--primary btn--lg magnetic" href="mailto:{{ company.email }}?subject={{ '[VDP] ' | urlencode }}">{{ sp.report }}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <h2 class="section-title section-title--sm">{{ sp.scope_title }}</h2>
+    </div>
+    <div class="split__main scope">
+      <div class="scope__col reveal">
+        <h3 class="scope__label scope__label--in">{{ sp.in_label }}</h3>
+        <ul class="ticklist">
+          {% for item in sp.scope_in %}
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19 7"/></svg><span>{{ item }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="scope__col reveal" data-delay="80">
+        <h3 class="scope__label scope__label--out">{{ sp.out_label }}</h3>
+        <ul class="ticklist ticklist--out">
+          {% for item in sp.scope_out %}
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg><span>{{ item }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <h2 class="section-title section-title--sm">{{ sp.rules_title }}</h2>
+    </div>
+    <div class="split__main">
+      <ol class="rulelist">
+        {% for rule in sp.rules %}
+        <li class="reveal" data-delay="{{ loop.index0 * 50 }}"><span>{{ '%02d' % loop.index }}</span><p>{{ rule }}</p></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Process</p>
+      <h2 class="section-title">{{ sp.timeline_title }}</h2>
+    </div>
+    <ol class="steps steps--compact">
+      {% for title, desc in sp.timeline %}
+      <li class="step reveal" data-delay="{{ loop.index0 * 60 }}">
+        <span class="step__no">{{ '%02d' % loop.index }}</span>
+        <div class="step__body"><h3>{{ title }}</h3><p>{{ desc }}</p></div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container split">
+    <div class="split__aside reveal">
+      <h2 class="section-title section-title--sm">{{ sp.how_title }}</h2>
+    </div>
+    <div class="split__main">
+      <p class="prose reveal">{{ sp.how_desc }}</p>
+      <p class="reveal"><a class="btn btn--primary magnetic" href="mailto:{{ company.email }}?subject={{ '[VDP] ' | urlencode }}">{{ company.email }}</a></p>
+      <p class="muted small reveal">{{ sp.txt_note }} <a href="/.well-known/security.txt" class="inline-link">security.txt</a></p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
