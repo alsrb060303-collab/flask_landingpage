@@ -152,6 +152,15 @@ def insights():
     return render_template("insights.html")
 
 
+@site.route("/insights/<slug>")
+def insight_detail(slug):
+    idx = next((i for i, p in enumerate(INSIGHTS) if p["slug"] == slug), None)
+    if idx is None:
+        abort(404)
+    nxt = INSIGHTS[(idx + 1) % len(INSIGHTS)] if len(INSIGHTS) > 1 else None
+    return render_template("insight_detail.html", post=INSIGHTS[idx], nxt=nxt)
+
+
 @site.route("/careers")
 def careers():
     return render_template("careers.html")
@@ -211,6 +220,8 @@ def sitemap():
             urls.append(url_for(f"{lang}.{name}"))
         for slug in SERVICE_ORDER:
             urls.append(url_for(f"{lang}.service_detail", slug=slug))
+        for post in INSIGHTS:
+            urls.append(url_for(f"{lang}.insight_detail", slug=post["slug"]))
 
     today = datetime.now().strftime("%Y-%m-%d")
     body = ['<?xml version="1.0" encoding="UTF-8"?>']

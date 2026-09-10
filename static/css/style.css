@@ -208,13 +208,16 @@ code { font-family: var(--mono); }
 .lang-switch svg { width: 14px; height: 14px; }
 .lang-switch:hover { color: var(--text); border-color: rgba(90,141,255,.5); background: rgba(46,107,255,.1); }
 
-.header__progress {
-  position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%;
+/* 스크롤 진행바 — 헤더와 분리해 뷰포트 최상단에 고정한다.
+   헤더에 붙여 두면 헤더가 숨겨질 때 같이 딸려 올라가 흔들린다. */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 120;
   transform: scaleX(0); transform-origin: 0 50%;
   background: linear-gradient(90deg, var(--blue-500), var(--cyan));
   opacity: 0; transition: opacity var(--fast) var(--ease);
+  pointer-events: none; will-change: transform;
 }
-.header.is-stuck .header__progress { opacity: 1; }
+.scroll-progress.is-on { opacity: 1; }
 
 .nav-toggle { display: none; width: 40px; height: 40px; border-radius: 10px; position: relative; }
 .nav-toggle span {
@@ -491,15 +494,54 @@ code { font-family: var(--mono); }
 .post h2 { font-size: 19px; line-height: 1.4; }
 .post__excerpt { color: var(--text-2); font-size: 14.5px; line-height: 1.65; flex: 1; }
 .post__more { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: var(--blue-400); }
-.post__more svg { width: 15px; height: 15px; }
+.post__more svg { width: 15px; height: 15px; transition: transform var(--fast) var(--ease); }
+.post:hover .post__more svg { transform: translateX(4px); }
+.post__read { margin-left: auto; color: var(--text-3); }
+
+/* 인사이트 본문 */
+.article { max-width: 760px; margin: clamp(40px, 5vw, 64px) auto 0; }
+.article__p { color: var(--text-2); font-size: clamp(16px, 1.35vw, 17.5px); line-height: 1.9; margin-bottom: 24px; }
+.article__h { font-size: clamp(20px, 2.1vw, 25px); margin: 46px 0 18px; }
+.article__h:first-child { margin-top: 0; }
+.article__list { margin: 0 0 26px; display: flex; flex-direction: column; gap: 12px; }
+.article__list li { position: relative; padding-left: 22px; color: var(--text-2); font-size: 15.5px; line-height: 1.75; }
+.article__list li::before {
+  content: ""; position: absolute; left: 2px; top: .68em; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--blue-400);
+}
+.article__quote {
+  margin: 34px 0; padding: 22px 26px; border-left: 2px solid var(--blue-500);
+  border-radius: 0 var(--radius-s) var(--radius-s) 0; background: rgba(46, 107, 255, .06);
+  color: var(--text); font-size: clamp(16px, 1.5vw, 19px); line-height: 1.7; font-weight: 550;
+  letter-spacing: -.018em;
+}
+.article__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; font-size: 13px; color: var(--text-3); margin-bottom: 20px; }
+.page-hero--article .page-title { max-width: 860px; }
+.section--article { padding-top: clamp(28px, 3vw, 44px); }
+
+/* 푸터 소셜 */
+.footer__social { display: flex; gap: 10px; margin-top: 20px; }
+.footer__social a {
+  display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px;
+  border: 1px solid var(--line-2); color: var(--text-3);
+  transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease), background var(--fast) var(--ease), transform var(--fast) var(--ease);
+}
+.footer__social svg { width: 17px; height: 17px; }
+.footer__social a:hover { color: var(--text); border-color: rgba(90,141,255,.5); background: rgba(46,107,255,.1); transform: translateY(-2px); }
 
 /* 채용 */
 .job-list { display: flex; flex-direction: column; }
-.job { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; padding: 26px 0; border-bottom: 1px solid var(--line); }
+.job { padding: 30px 0; border-bottom: 1px solid var(--line); }
 .job:first-child { border-top: 1px solid var(--line); }
-.job h3 { font-size: 19px; }
+.job__head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px 20px; }
+.job h3 { font-size: 20px; }
 .job__meta { display: flex; align-items: center; margin-top: 7px; font-size: 13.5px; color: var(--text-3); }
-.job__summary { margin-top: 10px; color: var(--text-2); font-size: 14.5px; max-width: 640px; }
+.job__summary { margin-top: 12px; color: var(--text-2); font-size: 15px; max-width: 680px; }
+.job__detail { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px 40px; margin-top: 22px; padding-top: 22px; border-top: 1px dashed var(--line); }
+.job__detail h4 { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 14px; font-weight: 600; }
+.ticklist--sm li { font-size: 14px; gap: 10px; }
+.ticklist--sm svg { width: 16px; height: 16px; margin-top: 3px; }
+.ticklist--soft svg { color: var(--text-3); }
 
 /* 취약점 제보 */
 .scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 34px; }

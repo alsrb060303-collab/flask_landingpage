@@ -43,22 +43,48 @@
     var progress = $('#scrollProgress');
     if (!header) return;
 
-    var last = 0;
+    var last = window.pageYOffset;
+    var acc = 0;          // 같은 방향으로 누적된 스크롤량
+    var hidden = false;
+
+    // 히스테리시스 임계값. 프레임 단위 델타로 토글하면 헤더가 계속 떨린다.
+    var HIDE_AFTER = 110; // 아래로 이만큼 연속 스크롤해야 숨김
+    var SHOW_AFTER = 60;  // 위로 이만큼 연속 스크롤해야 복귀
+    var LOCK_TOP = 260;   // 이 지점 위쪽에서는 항상 보여준다
+
+    function setHidden(v) {
+      if (hidden === v) return;
+      hidden = v;
+      header.classList.toggle('is-hidden', v);
+      acc = 0;
+    }
 
     onScroll(function (y) {
       header.classList.toggle('is-stuck', y > 12);
 
-      // 아래로 빠르게 스크롤하면 헤더를 숨기고, 위로 올리면 즉시 되돌린다.
+      var d = y - last;
+      last = y;
+
+      // 방향이 바뀌면 누적을 초기화한다.
+      if (d !== 0 && (d > 0) !== (acc > 0)) acc = 0;
+      acc += d;
+
       var nav = $('#nav');
       var menuOpen = nav && nav.classList.contains('is-open');
-      if (!menuOpen) {
-        header.classList.toggle('is-hidden', y > 240 && y > last + 4);
+
+      if (menuOpen || y <= LOCK_TOP) {
+        setHidden(false);
+      } else if (acc > HIDE_AFTER) {
+        setHidden(true);
+      } else if (acc < -SHOW_AFTER) {
+        setHidden(false);
       }
-      last = y;
 
       if (progress) {
         var max = document.documentElement.scrollHeight - window.innerHeight;
-        progress.style.transform = 'scaleX(' + (max > 0 ? Math.min(y / max, 1) : 0) + ')';
+        var p = max > 0 ? Math.min(Math.max(y / max, 0), 1) : 0;
+        progress.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+        progress.classList.toggle('is-on', y > 12);
       }
     });
   }

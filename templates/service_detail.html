@@ -20,8 +20,8 @@
     <p class="page-desc reveal" data-delay="180">{{ s.summary }}</p>
 
     <dl class="svc-facts reveal" data-delay="240">
-      <div><dt>{{ t.svc.duration }}</dt><dd>{{ t.svc.duration_value or t.svc.tbd }}</dd></div>
-      <div><dt>{{ t.svc.price }}</dt><dd>{{ t.svc.price_value or t.svc.tbd }}</dd></div>
+      <div><dt>{{ t.svc.duration }}</dt><dd>{{ s.duration or t.svc.duration_value or t.svc.tbd }}</dd></div>
+      <div><dt>{{ t.svc.price }}</dt><dd>{{ s.price or t.svc.price_value or t.svc.tbd }}</dd></div>
       <div><dt>{{ t.svc.standards }}</dt><dd>{{ s.standards | join(' · ') }}</dd></div>
     </dl>
   </div>

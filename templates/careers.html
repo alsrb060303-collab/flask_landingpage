@@ -46,17 +46,45 @@
     {% if openings %}
     <ul class="job-list">
       {% for job in openings %}
+      {% set req = job.requirements if lang == 'ko' else (job.requirements_en or job.requirements) %}
+      {% set pref = job.preferred if lang == 'ko' else (job.preferred_en or job.preferred) %}
       <li class="job reveal" data-delay="{{ loop.index0 * 50 }}">
-        <div class="job__body">
-          <h3>{{ job.title if lang == 'ko' else (job.title_en or job.title) }}</h3>
-          <p class="job__meta">
-            <span>{{ job.type if lang == 'ko' else (job.type_en or job.type) }}</span>
-            <span class="dot">·</span>
-            <span>{{ job.location if lang == 'ko' else (job.location_en or job.location) }}</span>
-          </p>
-          <p class="job__summary">{{ job.summary if lang == 'ko' else (job.summary_en or job.summary) }}</p>
+        <div class="job__head">
+          <div>
+            <h3>{{ job.title if lang == 'ko' else (job.title_en or job.title) }}</h3>
+            <p class="job__meta">
+              <span>{{ job.type if lang == 'ko' else (job.type_en or job.type) }}</span>
+              <span class="dot">·</span>
+              <span>{{ job.location if lang == 'ko' else (job.location_en or job.location) }}</span>
+            </p>
+          </div>
+          <a class="btn btn--ghost btn--sm" href="mailto:{{ company.email }}?subject={{ ((('지원 - ' if lang == 'ko' else 'Application - ') ~ (job.title if lang == 'ko' else (job.title_en or job.title)))) | urlencode }}">{{ cp.apply }}</a>
         </div>
-        <a class="btn btn--ghost btn--sm" href="mailto:{{ company.email }}?subject={{ ('지원 - ' ~ job.title) | urlencode }}">{{ cp.apply }}</a>
+
+        <p class="job__summary">{{ job.summary if lang == 'ko' else (job.summary_en or job.summary) }}</p>
+
+        <div class="job__detail">
+          {% if req %}
+          <div>
+            <h4>{{ cp.req_title }}</h4>
+            <ul class="ticklist ticklist--sm">
+              {% for r in req %}
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19 7"/></svg><span>{{ r }}</span></li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+          {% if pref %}
+          <div>
+            <h4>{{ cp.pref_title }}</h4>
+            <ul class="ticklist ticklist--sm ticklist--soft">
+              {% for r in pref %}
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg><span>{{ r }}</span></li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+        </div>
       </li>
       {% endfor %}
     </ul>
@@ -71,6 +99,27 @@
       <code class="blank__path">content.py → OPENINGS</code>
     </div>
     {% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Process</p>
+      <h2 class="section-title">{{ cp.process_title }}</h2>
+    </div>
+    <ol class="steps steps--compact">
+      {% for title, desc in cp.process %}
+      <li class="step reveal" data-delay="{{ loop.index0 * 60 }}">
+        <span class="step__no">{{ '%02d' % loop.index }}</span>
+        <div class="step__body"><h3>{{ title }}</h3><p>{{ desc }}</p></div>
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="muted small reveal" style="margin-top: 26px">
+      {{ '지원과 문의는 ' if lang == 'ko' else 'Applications and questions: ' }}
+      <a class="inline-link" href="mailto:{{ company.email }}">{{ company.email }}</a>
+    </p>
   </div>
 </section>
 

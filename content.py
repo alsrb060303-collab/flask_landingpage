@@ -4,6 +4,22 @@
 
 여기만 고치면 사이트 전체가 바뀐다. HTML 은 건드릴 필요 없다.
 값이 "" (빈 문자열) 이거나 [] (빈 목록) 인 항목은 화면에 "채워 넣을 자리" 로 표시된다.
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│  ⚠  아래 항목들은 레이아웃 확인용 '샘플 데이터'다. 실제 공개 전 반드시 교체할 것.  │
+│                                                                          │
+│   · COMPANY["biz_no"]        사업자등록번호 (지금은 형식만 넣어 둔 상태)        │
+│   · CONTENT[*]["stats"]      수행 프로젝트 수 · CVE 건수 · 자격증 수           │
+│   · SERVICES[*][*]["price"]  서비스 가격                                    │
+│   · TEAM                     팀원 — 전원 가상 인물                          │
+│   · CERTIFICATIONS           보유 자격증 및 수량                            │
+│   · INSIGHTS                 기술 블로그 글 — 전부 예시 원고                 │
+│   · OPENINGS                 채용 공고                                     │
+│   · about_page["ceo_bio"]    대표 약력                                     │
+│                                                                          │
+│  실적·자격증·가격은 잠재 고객이 계약 판단에 쓰는 정보다. 사실과 다르면            │
+│  표시광고법 위반 소지가 있으니 실제 값으로 바꾸거나 해당 섹션을 비워 둘 것.       │
+└──────────────────────────────────────────────────────────────────────────┘
 """
 
 # ---------------------------------------------------------------------------
@@ -25,9 +41,12 @@ COMPANY = {
     "phone_href": "tel:+821025910559",
     "email": "alsrb060303@gmail.com",
     "site_url": "https://univ-security.co.kr",   # TODO: 실제 도메인으로 교체
-    "biz_no": "",                                 # TODO: 사업자등록번호
-    "github": "",                                 # TODO: 있으면 입력
-    "linkedin": "",                               # TODO: 있으면 입력
+    # ⚠ 사업자등록번호는 법적 표시 의무가 있는 식별자다. 임의의 숫자를 채우면 그 자체로
+    #   허위 표시가 되므로 비워 뒀다. 발급받은 번호를 "123-45-67890" 형식으로 넣으면
+    #   푸터와 회사정보 표에 자동으로 나타난다. 비어 있으면 자동으로 숨겨진다.
+    "biz_no": "",
+    "github": "https://github.com/alsrb060303-collab",
+    "linkedin": "",                               # TODO: 회사 페이지 개설 후 입력
 }
 
 
@@ -46,6 +65,8 @@ SERVICES = {
         "ko": {
             "name": "API 모의해킹",
             "tagline": "문서에 없는 엔드포인트까지 찾아냅니다",
+            "duration": "2 ~ 3주",
+            "price": "1,200만원부터",
             "summary": "REST · GraphQL · gRPC 를 대상으로 인증·인가 우회, 객체 수준 권한 결함, "
                        "대량 데이터 노출을 실제 공격 기법으로 검증합니다. "
                        "OWASP API Security Top 10 을 기준선으로 삼되, 거기서 멈추지 않습니다.",
@@ -86,6 +107,8 @@ SERVICES = {
         "en": {
             "name": "API Penetration Testing",
             "tagline": "We find the endpoints your documentation forgot",
+            "duration": "2 – 3 weeks",
+            "price": "From ₩12,000,000",
             "summary": "We test REST, GraphQL and gRPC surfaces for broken authorization, "
                        "authentication bypass and excessive data exposure using real attack "
                        "techniques. The OWASP API Security Top 10 is our baseline, not our ceiling.",
@@ -133,6 +156,8 @@ SERVICES = {
         "ko": {
             "name": "네트워크 모의해킹",
             "tagline": "경계는 이미 무너져 있다고 가정합니다",
+            "duration": "3 ~ 4주",
+            "price": "1,800만원부터",
             "summary": "외부 노출 자산부터 내부 도메인 장악까지, 실제 침입 경로를 단계별로 검증합니다. "
                        "포트 목록을 나열하는 스캔 리포트가 아니라, 여기서 저기까지 어떻게 갈 수 있는지를 보여드립니다.",
             "targets": [
@@ -171,6 +196,8 @@ SERVICES = {
         "en": {
             "name": "Network Penetration Testing",
             "tagline": "We assume the perimeter has already fallen",
+            "duration": "3 – 4 weeks",
+            "price": "From ₩18,000,000",
             "summary": "From internet-facing assets to full domain compromise, we validate real "
                        "intrusion paths step by step. Not a list of open ports — a map of how an "
                        "attacker gets from the edge to your crown jewels.",
@@ -217,6 +244,8 @@ SERVICES = {
         "ko": {
             "name": "레드팀 침투 시나리오",
             "tagline": "취약점이 아니라 대응 능력을 시험합니다",
+            "duration": "6 ~ 10주",
+            "price": "4,500만원부터",
             "summary": "특정 목표(고객 DB 반출, 결제 시스템 장악 등)를 정해두고, 탐지되지 않는 것을 "
                        "전제로 실제 공격자처럼 움직입니다. 모의해킹이 '문이 열려 있는가'를 묻는다면 "
                        "레드팀은 '누군가 들어왔을 때 알아챌 수 있는가'를 묻습니다.",
@@ -256,6 +285,8 @@ SERVICES = {
         "en": {
             "name": "Red Team Operations",
             "tagline": "We test your response, not your patch level",
+            "duration": "6 – 10 weeks",
+            "price": "From ₩45,000,000",
             "summary": "We agree on an objective — exfiltrating a customer database, taking over a "
                        "payment system — and then move like a real adversary, assuming we must not be "
                        "caught. A pentest asks whether the door is open. A red team asks whether you "
@@ -303,6 +334,8 @@ SERVICES = {
         "ko": {
             "name": "AI 취약점 점검 툴",
             "tagline": "AI 가 넓게 훑고, 전문가가 깊게 파고듭니다",
+            "duration": "초기 연동 1주 · 이후 상시",
+            "price": "월 280만원부터",
             "summary": "자체 개발한 AI 기반 점검 엔진으로 코드와 트래픽을 대규모로 분석해 의심 지점을 "
                        "찾아내고, 그 결과를 전문가가 직접 검증합니다. 오탐 가득한 스캐너 결과를 "
                        "그대로 전달하지 않습니다. 사람이 확인한 것만 리포트에 올라갑니다.",
@@ -340,6 +373,8 @@ SERVICES = {
         "en": {
             "name": "AI-Assisted Vulnerability Scanning",
             "tagline": "AI scans wide. Experts dig deep.",
+            "duration": "1 week onboarding, then continuous",
+            "price": "From ₩2,800,000 / month",
             "summary": "Our in-house AI engine analyses code and traffic at scale to surface suspicious "
                        "areas, and our engineers verify every one of them by hand. We do not forward raw "
                        "scanner output. If a human could not reproduce it, it does not go in the report.",
@@ -427,10 +462,11 @@ CONTENT = {
         },
         "stats_title": "숫자로 보는 유니브",
         "stats_note": "실적이 쌓이는 대로 갱신합니다.",
+        # ⚠ 샘플 수치. 실제 실적으로 교체하거나, value 를 "" 로 두면 자동으로 가려진다.
         "stats": [
-            {"key": "projects", "value": "", "suffix": "+", "label": "수행 프로젝트"},
-            {"key": "cve", "value": "", "suffix": "", "label": "발견 및 신고 CVE"},
-            {"key": "certs", "value": "", "suffix": "", "label": "보유 자격증"},
+            {"key": "projects", "value": "18", "suffix": "+", "label": "수행 프로젝트"},
+            {"key": "cve", "value": "6", "suffix": "", "label": "발견 및 신고 CVE"},
+            {"key": "certs", "value": "14", "suffix": "", "label": "보유 자격증"},
             {"key": "founded", "value": "2026", "suffix": "", "label": "설립연도"},
         ],
         "home_services": {
@@ -522,15 +558,24 @@ CONTENT = {
             ],
             "ceo_title": "대표",
             "ceo_role": "대표이사 / 보안 컨설턴트",
-            "ceo_message": "",          # TODO: 대표 인사말
-            "ceo_bio": "",              # TODO: 대표 약력
+            "ceo_message": "보안은 리포트의 두께로 증명되지 않습니다. "
+                           "공격자가 실제로 들어올 수 있는 길을 하나라도 정확히 짚어내는 것, "
+                           "그리고 그 길이 정말 막혔는지 끝까지 확인하는 것. "
+                           "유니브는 그 두 가지만 합니다.",
+            # ⚠ 샘플 약력. 실제 이력으로 교체할 것.
+            "ceo_bio": "모의해킹과 취약점 연구를 중심으로 경력을 쌓았고, 2026년 유니브를 설립해 "
+                       "API·네트워크 진단과 레드팀 운영을 총괄하고 있습니다. AI 기반 대규모 코드 분석과 "
+                       "전문가 수동 검증을 결합한 유니브의 진단 방법론을 설계했습니다.",
             "team_title": "팀",
             "team_note": "팀원 정보를 채워 넣을 자리입니다. content.py 의 TEAM 을 수정하세요.",
             "certs_title": "자격 및 인증",
             "certs_note": "보유 자격증·기업 인증을 채워 넣을 자리입니다.",
             "history_title": "연혁",
             "history": [
-                ("2026.09", "유니브 설립"),
+                ("2026.09", "유니브 설립 (강원특별자치도 춘천시)"),
+                ("2026.09", "AI 취약점 점검 엔진 'UNIV Scanner' 내부 알파 가동"),
+                ("2026.09", "공식 웹사이트 및 취약점 제보(VDP) 정책 공개"),
+                ("2026.09", "API·네트워크 모의해킹 서비스 개시"),
             ],
             "history_note": "연혁이 쌓이는 대로 추가됩니다.",
             "info_title": "회사 정보",
@@ -553,6 +598,11 @@ CONTENT = {
             "empty_title": "첫 글을 준비하고 있습니다",
             "empty_desc": "발행되는 대로 이곳에 올라옵니다. content.py 의 INSIGHTS 목록에 글을 추가하면 자동으로 표시됩니다.",
             "read": "읽기",
+            "back": "전체 인사이트",
+            "next": "다음 글",
+            "cta_title": "이런 진단이 필요하신가요",
+            "cta_desc": "글에서 다룬 내용을 실제 환경에 적용해 검증해 드립니다.",
+            "cta_btn": "진단 문의하기",
         },
 
         # ---- 채용 ------------------------------------------------------
@@ -571,6 +621,15 @@ CONTENT = {
             "empty_desc": "그래도 관심이 있다면 언제든 연락 주세요. 상시로 이력을 받고 있습니다.",
             "apply": "지원하기",
             "open_apply": "상시 지원 메일 보내기",
+            "req_title": "이런 경험이 필요합니다",
+            "pref_title": "이런 분이면 더 좋습니다",
+            "process_title": "채용 절차",
+            "process": [
+                ("서류", "이력서와 함께 직접 작성한 분석 글·리포트·CTF 라이트업 중 하나를 보내 주세요."),
+                ("기술 과제", "실제 진단 환경과 비슷한 과제를 드립니다. 기한은 넉넉하게 드립니다."),
+                ("기술 면접", "제출한 과제를 함께 뜯어보며 이야기합니다."),
+                ("최종", "처우 협의 후 입사일을 정합니다."),
+            ],
         },
 
         # ---- 문의 ------------------------------------------------------
@@ -697,9 +756,9 @@ CONTENT = {
         "stats_title": "UNIV in numbers",
         "stats_note": "Updated as our track record grows.",
         "stats": [
-            {"key": "projects", "value": "", "suffix": "+", "label": "Projects delivered"},
-            {"key": "cve", "value": "", "suffix": "", "label": "CVEs discovered"},
-            {"key": "certs", "value": "", "suffix": "", "label": "Certifications held"},
+            {"key": "projects", "value": "18", "suffix": "+", "label": "Projects delivered"},
+            {"key": "cve", "value": "6", "suffix": "", "label": "CVEs discovered"},
+            {"key": "certs", "value": "14", "suffix": "", "label": "Certifications held"},
             {"key": "founded", "value": "2026", "suffix": "", "label": "Founded"},
         ],
         "home_services": {
@@ -789,15 +848,24 @@ CONTENT = {
             ],
             "ceo_title": "Leadership",
             "ceo_role": "CEO / Security Consultant",
-            "ceo_message": "",
-            "ceo_bio": "",
+            "ceo_message": "Security is not proven by the thickness of a report. "
+                           "Pinpointing one path an attacker could actually walk through, "
+                           "and confirming that path is truly closed. "
+                           "Those are the only two things UNIV does.",
+            "ceo_bio": "Kim built his career in penetration testing and vulnerability research. "
+                       "He founded UNIV in 2026 and leads its API, network and red team practice, "
+                       "and designed the firm's methodology of pairing large-scale AI analysis "
+                       "with manual expert validation.",
             "team_title": "Team",
             "team_note": "Placeholder for team members. Edit TEAM in content.py.",
             "certs_title": "Certifications",
             "certs_note": "Placeholder for individual and corporate certifications.",
             "history_title": "Milestones",
             "history": [
-                ("2026.09", "UNIV founded"),
+                ("2026.09", "UNIV founded in Chuncheon, Gangwon State"),
+                ("2026.09", "Internal alpha of the UNIV Scanner AI assessment engine"),
+                ("2026.09", "Official website and vulnerability disclosure policy published"),
+                ("2026.09", "API and network penetration testing services launched"),
             ],
             "history_note": "Milestones will be added as they happen.",
             "info_title": "Company information",
@@ -819,6 +887,11 @@ CONTENT = {
             "empty_title": "Our first post is on the way",
             "empty_desc": "Posts will appear here as they are published. Add entries to INSIGHTS in content.py.",
             "read": "Read",
+            "back": "All insights",
+            "next": "Next post",
+            "cta_title": "Need this tested for real?",
+            "cta_desc": "We validate everything in this post against your actual environment.",
+            "cta_btn": "Request an assessment",
         },
 
         "careers_page": {
@@ -836,6 +909,15 @@ CONTENT = {
             "empty_desc": "Reach out anyway — we accept speculative applications year-round.",
             "apply": "Apply",
             "open_apply": "Send a speculative application",
+            "req_title": "What we need",
+            "pref_title": "Nice to have",
+            "process_title": "Hiring process",
+            "process": [
+                ("Application", "Send a CV plus one thing you wrote yourself — an analysis post, a report, a CTF write-up."),
+                ("Technical task", "A task close to real assessment work. We give you plenty of time."),
+                ("Technical interview", "We go through your submission together."),
+                ("Offer", "Compensation discussion and a start date."),
+            ],
         },
 
         "contact_page": {
@@ -921,27 +1003,402 @@ CONTENT = {
 # 아래는 "틀만 있고 비어 있는" 목록들 ── 채우면 해당 섹션이 자동으로 살아난다
 # ---------------------------------------------------------------------------
 
-# 팀원.  예:
-# {"name": "홍길동", "name_en": "Gildong Hong", "role": "보안 엔지니어",
-#  "role_en": "Security Engineer", "image": "team-01.jpg",
-#  "certs": ["OSCP"], "bio": "...", "bio_en": "..."}
-TEAM = []
+# ---------------------------------------------------------------------------
+# 팀원
+# ⚠ 아래 4명은 전원 가상 인물이다. 실제 팀원으로 교체하거나, TEAM = [] 로 비우면
+#    화면에는 "채워 넣을 자리" 안내가 대신 표시된다.
+# ---------------------------------------------------------------------------
+TEAM = [
+    {
+        "name": "박서준", "name_en": "Seojun Park",
+        "role": "모의해킹 팀 리드", "role_en": "Lead Penetration Tester",
+        "image": "team-01.jpg",
+        "certs": ["OSCP", "CREST CRT"],
+    },
+    {
+        "name": "이하늘", "name_en": "Haneul Lee",
+        "role": "레드팀 오퍼레이터", "role_en": "Red Team Operator",
+        "image": "team-02.jpg",
+        "certs": ["OSEP", "CRTO"],
+    },
+    {
+        "name": "정우진", "name_en": "Woojin Jung",
+        "role": "취약점 연구 · 리버싱", "role_en": "Vulnerability Researcher",
+        "image": "team-03.jpg",
+        "certs": ["OSED"],
+    },
+    {
+        "name": "최민서", "name_en": "Minseo Choi",
+        "role": "보안 엔지니어 · AI 진단", "role_en": "Security Engineer, AI Assessment",
+        "image": "team-04.jpg",
+        "certs": ["OSWE", "CKS"],
+    },
+]
 
-# 보유 자격증 / 기업 인증.  예:
-# {"name": "OSCP", "issuer": "OffSec", "count": 2}
-CERTIFICATIONS = []
+# ---------------------------------------------------------------------------
+# 보유 자격증 / 기업 인증
+# ⚠ 개수는 샘플이다. 실제 보유 현황으로 교체할 것.
+# ---------------------------------------------------------------------------
+CERTIFICATIONS = [
+    {"name": "OSCP", "issuer": "OffSec", "count": 3},
+    {"name": "OSEP", "issuer": "OffSec", "count": 1},
+    {"name": "OSED", "issuer": "OffSec", "count": 1},
+    {"name": "OSWE", "issuer": "OffSec", "count": 1},
+    {"name": "CRTO", "issuer": "Zero-Point Security", "count": 2},
+    {"name": "CREST CRT", "issuer": "CREST", "count": 1},
+    {"name": "CKS", "issuer": "CNCF", "count": 1},
+    {"name": "정보보안기사", "issuer": "한국인터넷진흥원", "count": 2},
+    {"name": "리눅스마스터 1급", "issuer": "KAIT", "count": 1},
+    {"name": "ADsP", "issuer": "한국데이터산업진흥원", "count": 1},
+]
 
-# 인사이트 글.  예:
-# {"slug": "...", "date": "2026-10-01", "category": "Research",
-#  "title": "...", "title_en": "...", "excerpt": "...", "excerpt_en": "...",
-#  "image": "insight-01.jpg", "url": "#"}
-INSIGHTS = []
+# ---------------------------------------------------------------------------
+# 인사이트 글
+# ⚠ 아래 4편은 레이아웃 확인용 예시 원고다. 실제 리서치 글로 교체할 것.
+#    body 는 (블록종류, 내용) 튜플 목록: "h" 소제목 · "p" 문단 · "li" 목록 · "quote" 인용
+#    글을 지우려면 INSIGHTS = [] 로 두면 된다.
+# ---------------------------------------------------------------------------
+INSIGHTS = [
+    {
+        "slug": "shadow-api",
+        "date": "2026-09-08",
+        "category": "Research",
+        "image": "insight-01.jpg",
+        "read": {"ko": "7분", "en": "7 min"},
+        "ko": {
+            "title": "문서에 없는 API가 가장 위험하다",
+            "excerpt": "진단 범위는 보통 API 명세서에서 시작한다. 문제는 실제로 살아 있는 엔드포인트가 "
+                       "명세서보다 훨씬 많다는 것이다. 섀도우 API를 찾아내는 실전 절차를 정리했다.",
+            "body": [
+                ("p", "고객사에서 API 명세서를 받으면 대개 30~50개의 엔드포인트가 적혀 있다. "
+                      "진단을 끝낼 무렵 우리가 실제로 다룬 엔드포인트는 그 두 배쯤 된다. "
+                      "나머지 절반은 아무도 관리한다고 생각하지 않는 것들이다."),
+                ("h", "섀도우 API가 생기는 세 가지 경로"),
+                ("li", "버전 전환기의 잔재 — /v1 을 /v2 로 옮기면서 /v1 을 내리지 않은 경우"),
+                ("li", "내부용으로 만들었다가 방화벽 규칙이 바뀌며 외부에 노출된 관리 엔드포인트"),
+                ("li", "기능 플래그가 꺼져 있을 뿐, 라우팅은 살아 있는 미완성 기능"),
+                ("p", "공통점은 인증·인가 로직이 최신이 아니라는 것이다. 개발팀의 관심에서 벗어난 시점에 "
+                      "코드가 멈춰 있기 때문에, 그 사이에 강화된 검증이 여기에는 적용되지 않는다."),
+                ("h", "어디서 찾는가"),
+                ("p", "가장 수확이 좋은 곳은 클라이언트 번들이다. SPA 의 JavaScript 번들과 소스맵, "
+                      "모바일 앱의 리소스 파일에는 개발 중 사용했던 경로 문자열이 그대로 남아 있는 경우가 많다. "
+                      "번들에서 경로 패턴을 추출한 뒤, 이를 씨앗으로 삼아 버전 번호와 흔한 관리 경로를 조합해 확인한다."),
+                ("p", "그다음은 오류 응답이다. 존재하지 않는 경로와 존재하지만 권한이 없는 경로는 대개 "
+                      "다른 응답을 준다. 404 와 403 의 차이, 응답 시간의 미묘한 차이, "
+                      "헤더 구성의 차이 — 이 셋 중 하나만 달라도 존재 여부를 판별할 수 있다."),
+                ("quote", "명세서에 없다는 것은 방어가 없다는 뜻이지, 존재하지 않는다는 뜻이 아니다."),
+                ("h", "찾은 다음이 진짜 시작이다"),
+                ("p", "섀도우 엔드포인트를 목록화했다면 우선순위를 매겨야 한다. 우리는 세 가지 기준을 쓴다. "
+                      "인증 없이 응답하는가, 응답에 식별자가 포함되는가, 상태를 변경하는가. "
+                      "이 셋 중 둘 이상에 해당하면 그날 안에 고객사에 먼저 알린다. 리포트를 기다리지 않는다."),
+            ],
+        },
+        "en": {
+            "title": "The most dangerous API is the one nobody documented",
+            "excerpt": "Scoping usually starts from the API specification. The problem is that far more "
+                       "endpoints are alive than the spec admits. Here is how we hunt shadow APIs.",
+            "body": [
+                ("p", "A client's API specification typically lists 30 to 50 endpoints. By the end of an "
+                      "engagement we have usually touched about twice that. The other half are the ones "
+                      "nobody believes they own."),
+                ("h", "Three ways shadow APIs appear"),
+                ("li", "Migration leftovers — /v1 was never retired after /v2 shipped"),
+                ("li", "Admin endpoints built for internal use, then exposed by a firewall rule change"),
+                ("li", "Unfinished features whose flag is off but whose routing is live"),
+                ("p", "What they share is stale authorization logic. The code froze the moment the team "
+                      "stopped caring about it, so every hardening step since then skipped it."),
+                ("h", "Where to look"),
+                ("p", "Client bundles pay best. JavaScript bundles, source maps and mobile app resources "
+                      "routinely still carry path strings from development. We extract path patterns from "
+                      "the bundle, then use them as seeds and permute version numbers and common admin paths."),
+                ("p", "Error responses come second. A path that does not exist and a path you simply cannot "
+                      "reach usually answer differently — 404 versus 403, a subtle timing gap, a different "
+                      "header set. Any one of the three is enough to confirm existence."),
+                ("quote", "Absent from the spec means undefended, not absent from the server."),
+                ("h", "Finding them is where the work starts"),
+                ("p", "Once enumerated, they need ranking. We use three questions: does it answer without "
+                      "authentication, does the response carry identifiers, does it change state? "
+                      "Two yeses and the client hears from us the same day. That does not wait for the report."),
+            ],
+        },
+    },
+    {
+        "slug": "jwt-bypass",
+        "date": "2026-09-06",
+        "category": "Technical",
+        "image": "insight-02.jpg",
+        "read": {"ko": "6분", "en": "6 min"},
+        "ko": {
+            "title": "JWT 검증을 우회하는 다섯 가지 패턴",
+            "excerpt": "라이브러리를 쓰면 안전하다는 말은 절반만 맞다. 검증 로직을 직접 조립하는 순간 "
+                       "생기는 전형적인 구멍들을 실제 진단에서 마주친 순서대로 정리했다.",
+            "body": [
+                ("p", "JWT 자체는 잘 설계된 규격이다. 문제는 대부분의 구현이 규격의 일부만 쓰고, "
+                      "나머지는 \"우리 서비스에는 해당 없음\"으로 넘어간다는 데 있다."),
+                ("h", "1. alg 를 믿는 구현"),
+                ("p", "토큰 헤더의 alg 값을 그대로 읽어 검증 알고리즘을 고르는 코드는 여전히 흔하다. "
+                      "alg 를 none 으로 바꾸거나, RS256 을 HS256 으로 바꾸고 공개키를 비밀키 자리에 넣으면 "
+                      "서명을 스스로 만들 수 있다. 검증 알고리즘은 서버가 고정해야 한다."),
+                ("h", "2. 만료는 보되 발급 주체는 안 보는 구현"),
+                ("p", "exp 는 검사하면서 iss 와 aud 는 검사하지 않는 경우가 많다. 같은 인증 서버를 공유하는 "
+                      "다른 서비스의 토큰이 그대로 통과한다. 무료 체험 서비스에서 받은 토큰으로 "
+                      "유료 API 를 호출할 수 있게 되는 식이다."),
+                ("h", "3. 서명은 보되 본문은 다시 안 보는 구현"),
+                ("p", "서명 검증에 성공하면 payload 의 role 이나 user_id 를 그대로 신뢰하는 흐름이다. "
+                      "토큰 발급 시점의 권한이 지금도 유효하다는 보장은 없다. 권한이 회수된 계정의 "
+                      "만료 전 토큰이 계속 관리자로 동작한다."),
+                ("h", "4. kid 를 파일 경로로 쓰는 구현"),
+                ("p", "kid 헤더로 키 파일을 찾는 구조에서 경로 조작이나 SQL 주입이 가능한 경우가 있다. "
+                      "kid 는 사용자가 통제하는 입력이다. 화이트리스트에 있는 식별자만 받아야 한다."),
+                ("h", "5. 로그아웃이 클라이언트에만 있는 구현"),
+                ("p", "\"로그아웃\"이 브라우저 저장소를 지우는 것뿐이면, 유출된 토큰은 만료까지 그대로 살아 있다. "
+                      "짧은 만료 시간과 서버 측 무효화 목록 중 최소 하나는 있어야 한다."),
+                ("quote", "JWT 진단에서 우리가 가장 먼저 하는 일은 서명 깨기가 아니라, 서버가 무엇을 안 보는지 찾는 것이다."),
+            ],
+        },
+        "en": {
+            "title": "Five ways JWT validation gets bypassed",
+            "excerpt": "\"We use a library, so we're fine\" is half true. Here are the holes that open the "
+                       "moment you assemble validation yourself, in the order we meet them in real engagements.",
+            "body": [
+                ("p", "JWT is a well-designed specification. The trouble is that most implementations use "
+                      "part of it and wave the rest away as not applicable."),
+                ("h", "1. Trusting the alg header"),
+                ("p", "Code that reads alg from the token to pick the verification algorithm is still common. "
+                      "Set alg to none, or switch RS256 to HS256 and feed the public key in as the secret, "
+                      "and you can sign your own tokens. The server must fix the algorithm."),
+                ("h", "2. Checking expiry but not the issuer"),
+                ("p", "exp gets validated while iss and aud do not. Tokens from a sibling service sharing the "
+                      "same identity provider sail straight through — a free-tier token calling the paid API."),
+                ("h", "3. Verifying the signature but never rechecking the claims"),
+                ("p", "Once the signature passes, role and user_id in the payload are trusted verbatim. "
+                      "Nothing guarantees the privileges held at issue time still apply. A revoked admin "
+                      "keeps working until the token expires."),
+                ("h", "4. Using kid as a file path"),
+                ("p", "Where kid selects a key file, path traversal or SQL injection often follows. "
+                      "kid is attacker-controlled input; only allow-listed identifiers belong there."),
+                ("h", "5. Logout that only exists client-side"),
+                ("p", "If logging out just clears browser storage, a stolen token lives until expiry. "
+                      "You need short lifetimes, a server-side revocation list, or both."),
+                ("quote", "The first thing we do in a JWT assessment is not break the signature. It is find out what the server never looks at."),
+            ],
+        },
+    },
+    {
+        "slug": "red-team-is-not-pentest",
+        "date": "2026-09-04",
+        "category": "Column",
+        "image": "insight-03.jpg",
+        "read": {"ko": "5분", "en": "5 min"},
+        "ko": {
+            "title": "레드팀은 취약점을 찾지 않는다",
+            "excerpt": "모의해킹을 여러 번 받았는데도 레드팀이 필요한 이유. 두 서비스는 목적이 다르고, "
+                       "목적이 다르면 성공의 정의도 달라진다.",
+            "body": [
+                ("p", "\"작년에 모의해킹 받았는데 레드팀도 해야 하나요?\" 상담에서 가장 자주 받는 질문이다. "
+                      "답은 대개 \"네\"인데, 이유가 흔히 생각하는 것과 다르다."),
+                ("h", "모의해킹의 성공은 목록이다"),
+                ("p", "모의해킹은 정해진 범위 안에서 가능한 한 많은 결함을 찾는 일이다. 좋은 모의해킹 리포트는 "
+                      "빠짐없는 목록이다. 방어팀이 우리를 탐지하든 말든 상관없다. 오히려 탐지되면 "
+                      "테스트를 계속하기 위해 미리 알려 둔 담당자에게 연락해 예외 처리를 요청한다."),
+                ("h", "레드팀의 성공은 침묵이다"),
+                ("p", "레드팀은 정반대다. 목표 하나를 정하고, 탐지되지 않는 것을 전제로 거기까지 간다. "
+                      "취약점을 열 개 찾았는지는 중요하지 않다. 하나만 써서 목표에 도달했다면 그것으로 충분하다."),
+                ("p", "그래서 레드팀 리포트의 핵심은 취약점 목록이 아니라 타임라인이다. "
+                      "우리가 언제 무엇을 했고, 그중 무엇이 로그에 남았고, 무엇이 알람을 울렸고, "
+                      "누가 언제 그 알람을 봤는가. 취약점은 그 타임라인을 만들기 위한 재료일 뿐이다."),
+                ("quote", "모의해킹은 문이 열려 있는지 묻는다. 레드팀은 누군가 들어왔을 때 알아챌 수 있는지 묻는다."),
+                ("h", "순서가 있다"),
+                ("p", "관제도 EDR 도 없는 조직에 레드팀을 하면 결과가 뻔하다. 탐지 갭이 100%다. "
+                      "그건 돈을 들여 이미 아는 사실을 확인하는 일이다. 탐지 체계를 먼저 갖추고, "
+                      "모의해킹으로 표면을 정리한 뒤에 레드팀으로 그 체계가 작동하는지 시험하는 것이 순서다."),
+                ("p", "우리가 상담에서 레드팀을 말리는 경우가 실제로 있다. 아직 이른 조직에는 "
+                      "모의해킹부터 권한다. 그게 같은 예산으로 더 많이 안전해지는 길이기 때문이다."),
+            ],
+        },
+        "en": {
+            "title": "A red team is not looking for vulnerabilities",
+            "excerpt": "Why organisations that have run several pentests still need a red team. "
+                       "The two services have different goals, and different goals redefine success.",
+            "body": [
+                ("p", "\"We had a pentest last year — do we still need a red team?\" It is the question we "
+                      "hear most often. The answer is usually yes, but not for the reason people expect."),
+                ("h", "A pentest succeeds by producing a list"),
+                ("p", "A penetration test finds as many flaws as possible inside an agreed scope. A good "
+                      "report is an exhaustive list. Whether the blue team spots us is irrelevant — if they "
+                      "do, we call our contact and ask for an exception so testing can continue."),
+                ("h", "A red team succeeds by staying quiet"),
+                ("p", "A red team is the opposite. One objective, and the assumption that we must not be "
+                      "caught getting there. Finding ten vulnerabilities does not matter. Reaching the "
+                      "objective with one is enough."),
+                ("p", "So the core of a red team report is not a findings list but a timeline: what we did "
+                      "and when, what landed in the logs, what raised an alert, and who looked at that alert. "
+                      "Vulnerabilities are just the material we build that timeline from."),
+                ("quote", "A pentest asks whether the door is open. A red team asks whether you notice when someone walks through it."),
+                ("h", "There is an order to this"),
+                ("p", "Run a red team against an organisation with no SOC and no EDR and the result is "
+                      "predictable: a 100% detection gap. That is paying to confirm what you already knew. "
+                      "Build detection first, clean up the surface with penetration testing, then use a red "
+                      "team to find out whether any of it works."),
+                ("p", "We do talk clients out of red team engagements. For organisations that are not there "
+                      "yet, penetration testing buys far more safety per won."),
+            ],
+        },
+    },
+    {
+        "slug": "prompt-injection",
+        "date": "2026-09-02",
+        "category": "Research",
+        "image": "insight-04.jpg",
+        "read": {"ko": "8분", "en": "8 min"},
+        "ko": {
+            "title": "LLM 서비스의 프롬프트 주입, 어디까지 막을 수 있나",
+            "excerpt": "결론부터 말하면 완전히는 못 막는다. 그래서 방어의 목표는 차단이 아니라 "
+                       "피해 범위를 줄이는 쪽이어야 한다.",
+            "body": [
+                ("p", "프롬프트 주입 방어를 문의받으면 우리는 먼저 기대치를 낮추는 이야기부터 한다. "
+                      "입력 필터로 주입을 완전히 막는 방법은 현재 없다. 자연어에는 문법적 경계가 없기 때문이다. "
+                      "SQL 주입은 파라미터 바인딩으로 데이터와 코드를 분리할 수 있지만, "
+                      "프롬프트에는 그 경계를 그을 자리가 없다."),
+                ("h", "그럼 무엇을 하나"),
+                ("p", "주입 자체를 막는 대신, 주입이 성공했을 때 공격자가 할 수 있는 일을 줄인다. "
+                      "이건 익숙한 문제다. 최소 권한 원칙을 LLM 에이전트에 적용하는 것이다."),
+                ("li", "모델이 호출할 수 있는 도구를 기능 단위가 아니라 '이 대화에서 필요한 것'으로 제한한다"),
+                ("li", "쓰기·삭제·전송처럼 되돌릴 수 없는 동작은 모델이 아니라 사용자가 최종 승인한다"),
+                ("li", "모델에 주는 자격증명은 요청한 사용자의 권한을 그대로 상속하게 한다 — 서비스 계정을 주지 않는다"),
+                ("li", "외부에서 가져온 텍스트(웹페이지, 첨부파일, 메일 본문)는 항상 데이터로 표시해 주입 경로를 분리한다"),
+                ("h", "간접 주입이 더 위험하다"),
+                ("p", "사용자가 직접 입력창에 쓰는 주입은 그나마 낫다. 실제 사고는 모델이 읽은 문서 안에 "
+                      "명령이 숨어 있을 때 일어난다. 요약해 달라고 올린 PDF, 검색으로 가져온 웹페이지, "
+                      "받은 메일 본문 — 사용자는 그 안에 무엇이 들어 있는지 모른다."),
+                ("quote", "사용자가 신뢰하는 것은 모델이고, 모델이 읽는 것은 아무나 쓸 수 있다."),
+                ("h", "진단에서 우리가 보는 것"),
+                ("p", "LLM 기능이 있는 서비스를 진단할 때 우리는 모델을 속이는 데 시간을 많이 쓰지 않는다. "
+                      "대신 모델이 손댈 수 있는 것의 목록을 만든다. 어떤 도구를, 누구의 권한으로, "
+                      "어떤 승인 절차로 호출할 수 있는지. 그 목록이 짧을수록 안전한 서비스다."),
+            ],
+        },
+        "en": {
+            "title": "Prompt injection: how far can you actually defend?",
+            "excerpt": "The short answer is: not all the way. Which is why the goal of defence should be "
+                       "shrinking the blast radius, not blocking the input.",
+            "body": [
+                ("p", "When a client asks about prompt injection defence, we start by lowering expectations. "
+                      "There is currently no input filter that reliably stops injection, because natural "
+                      "language has no syntactic boundary. SQL injection can be solved by binding parameters "
+                      "— separating code from data. A prompt has nowhere to draw that line."),
+                ("h", "So what do you do instead?"),
+                ("p", "Rather than blocking the injection, reduce what an attacker gains once it lands. "
+                      "That is a familiar problem: least privilege, applied to an LLM agent."),
+                ("li", "Scope callable tools to what this conversation needs, not to what the product supports"),
+                ("li", "Irreversible actions — write, delete, send — get final approval from the user, not the model"),
+                ("li", "Give the model the requesting user's own privileges; never a service account"),
+                ("li", "Mark externally fetched text (web pages, attachments, email bodies) as data so the injection path stays separated"),
+                ("h", "Indirect injection is the dangerous one"),
+                ("p", "Injection typed into the chat box is the mild case. Real incidents come from "
+                      "instructions hidden inside content the model read — a PDF uploaded for summarising, "
+                      "a page pulled in by search, the body of an email. The user has no idea what is in there."),
+                ("quote", "The user trusts the model, and anyone can write what the model reads."),
+                ("h", "What we assess"),
+                ("p", "Testing an LLM-backed product, we spend little time trying to trick the model. "
+                      "We build the inventory of what the model can touch: which tools, under whose "
+                      "privileges, behind which approval step. The shorter that inventory, the safer the product."),
+            ],
+        },
+    },
+]
 
-# 채용 공고.  예:
-# {"title": "모의해킹 엔지니어", "title_en": "Penetration Tester",
-#  "type": "정규직", "type_en": "Full-time", "location": "춘천 / 원격",
-#  "location_en": "Chuncheon / Remote", "summary": "...", "summary_en": "..."}
-OPENINGS = []
+# ---------------------------------------------------------------------------
+# 채용 공고
+# ⚠ 샘플 공고다. 실제로 채용하지 않는다면 OPENINGS = [] 로 비워 둘 것.
+#    (비우면 "현재 공개 채용 중인 포지션이 없습니다" 안내와 상시지원 버튼이 표시된다.)
+# ---------------------------------------------------------------------------
+OPENINGS = [
+    {
+        "title": "모의해킹 엔지니어", "title_en": "Penetration Tester",
+        "type": "정규직", "type_en": "Full-time",
+        "location": "춘천 / 원격 병행", "location_en": "Chuncheon / Hybrid remote",
+        "summary": "웹·API·네트워크 진단을 수행하고, 고객이 실제로 고칠 수 있는 리포트를 씁니다.",
+        "summary_en": "Deliver web, API and network assessments — and write reports clients can act on.",
+        "requirements": [
+            "웹 또는 API 취약점 진단 실무 경험 2년 이상 (또는 그에 준하는 포트폴리오)",
+            "OWASP Top 10 수준의 결함을 도구 없이 직접 재현하고 설명할 수 있는 능력",
+            "Burp Suite 등 프록시 도구를 이용한 수동 진단 경험",
+            "Python 또는 Go 로 필요한 도구를 직접 만들어 쓸 수 있는 수준",
+        ],
+        "requirements_en": [
+            "2+ years assessing web or API targets (or an equivalent portfolio)",
+            "Able to reproduce and explain OWASP Top 10 class flaws without relying on tooling",
+            "Hands-on manual testing with an intercepting proxy such as Burp Suite",
+            "Comfortable writing your own tooling in Python or Go",
+        ],
+        "preferred": [
+            "OSCP · OSWE 등 실기 기반 자격증",
+            "버그바운티 유효 제보 이력 또는 CVE 발급 경험",
+            "클라우드(AWS/GCP) 환경 진단 경험",
+        ],
+        "preferred_en": [
+            "Hands-on certifications such as OSCP or OSWE",
+            "Accepted bug bounty submissions or an assigned CVE",
+            "Experience assessing AWS or GCP environments",
+        ],
+    },
+    {
+        "title": "레드팀 오퍼레이터", "title_en": "Red Team Operator",
+        "type": "정규직", "type_en": "Full-time",
+        "location": "춘천 / 원격 병행", "location_en": "Chuncheon / Hybrid remote",
+        "summary": "탐지되지 않는 것을 전제로 목표까지 도달하고, 그 과정을 방어팀과 함께 복기합니다.",
+        "summary_en": "Reach the objective without being caught — then walk the blue team through how.",
+        "requirements": [
+            "Active Directory 환경에서의 권한 상승·횡적 이동 실무 경험",
+            "C2 프레임워크 운영 경험 및 통신 채널 구성 이해",
+            "EDR·백신 하에서의 페이로드 실행 관련 이해",
+            "MITRE ATT&CK 기준으로 자신의 행동을 매핑해 설명할 수 있는 능력",
+        ],
+        "requirements_en": [
+            "Practical privilege escalation and lateral movement in Active Directory",
+            "Experience operating a C2 framework and designing its channels",
+            "Understanding of payload execution under EDR and antivirus",
+            "Able to map your own actions to MITRE ATT&CK and explain them",
+        ],
+        "preferred": [
+            "OSEP · CRTO 등 관련 자격증",
+            "퍼플팀 워크숍 또는 탐지 규칙 작성 경험",
+            "피지컬 침투 또는 소셜 엔지니어링 수행 경험",
+        ],
+        "preferred_en": [
+            "Certifications such as OSEP or CRTO",
+            "Purple team facilitation or detection engineering experience",
+            "Physical intrusion or social engineering experience",
+        ],
+    },
+    {
+        "title": "보안 리서치 인턴", "title_en": "Security Research Intern",
+        "type": "인턴 (3개월, 정규직 전환 가능)", "type_en": "Internship (3 months, convertible)",
+        "location": "원격", "location_en": "Remote",
+        "summary": "AI 점검 엔진의 탐지 규칙을 다듬고, 인사이트에 실릴 리서치 글을 함께 씁니다.",
+        "summary_en": "Refine detection rules for our AI engine and co-write the research we publish.",
+        "requirements": [
+            "취약점의 원리를 스스로 파고들어 본 경험 (CTF · 개인 연구 · 학회 활동 무관)",
+            "Python 으로 스크립트를 작성할 수 있는 수준",
+            "찾은 것을 글로 정리해 본 경험",
+        ],
+        "requirements_en": [
+            "You have dug into how a vulnerability actually works — CTF, personal research, coursework, any of it",
+            "Able to write Python scripts",
+            "You have written up something you found",
+        ],
+        "preferred": [
+            "리버싱 또는 바이너리 분석 경험",
+            "LLM · 머신러닝 관련 프로젝트 경험",
+        ],
+        "preferred_en": [
+            "Reverse engineering or binary analysis experience",
+            "Projects involving LLMs or machine learning",
+        ],
+    },
+]
 
 # 고객사 로고 파일명 (static/images/ 기준)
+# 요청에 따라 이미지는 비워 둔다 — 파일을 넣지 않으면 점선 자리표시자가 그대로 보인다.
 CLIENT_LOGOS = [f"client-{i:02d}.png" for i in range(1, 7)]

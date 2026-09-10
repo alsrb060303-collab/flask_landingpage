@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% set ip = t.insights_page %}
+{% set p = post[lang] %}
+
+{% block title %}{{ p.title }} | {{ company.name_en }}{% endblock %}
+{% block description %}{{ p.excerpt | truncate(150, true, '…') }}{% endblock %}
+
+{% block content %}
+
+<section class="page-hero page-hero--article">
+  <div class="page-hero__bg" aria-hidden="true"><div class="hero__grid"></div><div class="hero__glow hero__glow--a" data-parallax="0.12"></div></div>
+  <div class="container page-hero__inner">
+    <a href="{{ u('insights') }}" class="backlink reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H6m5 5-5-5 5-5"/></svg>
+      {{ ip.back }}
+    </a>
+    <p class="article__meta reveal" data-delay="60">
+      <span class="post__cat">{{ post.category }}</span>
+      <time datetime="{{ post.date }}">{{ post.date }}</time>
+      <span class="post__read">{{ post.read[lang] }}</span>
+    </p>
+    <h1 class="page-title reveal" data-delay="120">{{ p.title }}</h1>
+    <p class="page-desc reveal" data-delay="180">{{ p.excerpt }}</p>
+  </div>
+</section>
+
+<section class="section section--article">
+  <div class="container">
+    {{ image(post.image, p.title, ratio='21 / 9', classes='reveal') }}
+
+    <article class="article">
+      {% for kind, text in p.body %}
+        {% if kind == 'h' %}
+          <h2 class="article__h reveal">{{ text }}</h2>
+        {% elif kind == 'quote' %}
+          <blockquote class="article__quote reveal">{{ text }}</blockquote>
+        {% elif kind == 'li' %}
+          {% if loop.previtem is not defined or loop.previtem[0] != 'li' %}<ul class="article__list reveal">{% endif %}
+            <li>{{ text }}</li>
+          {% if loop.nextitem is not defined or loop.nextitem[0] != 'li' %}</ul>{% endif %}
+        {% else %}
+          <p class="article__p reveal">{{ text }}</p>
+        {% endif %}
+      {% endfor %}
+    </article>
+  </div>
+</section>
+
+<section class="section cta-band">
+  <div class="cta-band__bg" aria-hidden="true"><div class="cta-band__glow" data-parallax="0.1"></div></div>
+  <div class="container cta-band__inner reveal">
+    <h2 class="section-title">{{ ip.cta_title }}</h2>
+    <p class="section-desc">{{ ip.cta_desc }}</p>
+    <div class="cta-band__actions">
+      <a href="{{ u('contact') }}" class="btn btn--primary btn--lg magnetic">{{ ip.cta_btn }}</a>
+    </div>
+    {% if nxt %}
+    <a href="{{ u('insight_detail', slug=nxt.slug) }}" class="nextlink">
+      <span>{{ ip.next }}</span>
+      <strong>{{ nxt[lang].title }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"/></svg>
+      </strong>
+    </a>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}
