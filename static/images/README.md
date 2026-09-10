@@ -12,13 +12,29 @@
 | `ceo.jpg` | 회사소개 · 대표 사진 | 3:4 · 900×1200 |
 | `careers.jpg` | 채용 페이지 상단 | 21:9 · 1920×820 |
 | `map.jpg` | 문의 페이지 · 약도 | 4:3 · 1200×900 |
-| `service-api.jpg` | API 모의해킹 | 4:3 및 21:9 겸용 · 1600×1200 |
-| `service-network.jpg` | 네트워크 모의해킹 | 〃 |
-| `service-redteam.jpg` | 레드팀 침투 시나리오 | 〃 |
-| `service-ai.jpg` | AI 취약점 점검 툴 | 〃 |
+| `service-api.jpg` ✅ | API 모의해킹 | 4:3 및 21:9 겸용 · 1600×1200 |
+| `service-network.jpg` ✅ | 네트워크 모의해킹 | 〃 |
+| `service-redteam.jpg` ✅ | 레드팀 침투 시나리오 | 〃 |
+| `service-ai.jpg` ✅ | AI 취약점 점검 툴 | 〃 |
 | `team-01.jpg` ~ | 팀원 사진 | 1:1 · 800×800 |
 | `client-01.png` ~ `client-06.png` | 고객사 로고 | 가로형 · 배경 투명 PNG |
 | `insight-01.jpg` ~ | 인사이트 글 썸네일 | 16:9 · 1600×900 |
+
+✅ 표시된 파일은 이미 들어 있다 (`tools/gen_service_images.py` 로 생성한 벡터 그래픽).
+
+## 서비스 이미지 다시 뽑기
+
+색이 마음에 안 들거나 톤을 바꾸고 싶으면 사진을 구할 필요 없이 스크립트를 고치면 된다.
+
+```
+python tools/gen_service_images.py
+```
+
+- **색상**: `tools/gen_service_images.py` 상단 `PALETTE` 의 hex 값만 바꾸면 된다.
+  `bg1`(밝은 쪽) → `bg2`(어두운 쪽) 그라디언트에 `glow` / `accent` / `accent2` 로 포인트가 들어간다.
+- **밝기**: 같은 파일의 `VIGNETTE` 값을 낮추면 가장자리가 덜 눌려 전체가 환해진다. (0 = 없음)
+- 직접 찍은 사진이나 다른 이미지로 교체하려면 같은 이름으로 덮어쓰면 된다.
+  가로로 넓게 잘리므로(21:9) 중요한 요소는 세로 가운데에 두는 게 좋다.
 
 ## 참고
 

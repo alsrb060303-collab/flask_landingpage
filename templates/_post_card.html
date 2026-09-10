@@ -1,0 +1,21 @@
+{#
+  인사이트 카드 한 장.
+  서버 렌더(insights.html)와 동적 로딩 API(/api/insights)가 같은 마크업을 쓰도록
+  여기 한 곳에만 둔다. 컨텍스트: post, delay(선택)
+#}
+{% set p = post[lang] %}
+<a class="post reveal" {% if delay %}data-delay="{{ delay }}"{% endif %} href="{{ u('insight_detail', slug=post.slug) }}">
+  {{ image(post.image, p.title, ratio='16 / 9') }}
+  <div class="post__body">
+    <p class="post__meta">
+      <span class="post__cat">{{ post.category }}</span>
+      <time datetime="{{ post.date }}">{{ post.date }}</time>
+      <span class="post__read">{{ post.read[lang] }}</span>
+    </p>
+    <h2>{{ p.title }}</h2>
+    <p class="post__excerpt">{{ p.excerpt }}</p>
+    <span class="post__more">{{ t.insights_page.read }}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"/></svg>
+    </span>
+  </div>
+</a>

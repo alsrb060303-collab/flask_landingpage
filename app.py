@@ -23,6 +23,7 @@ from flask import (
     Response,
     abort,
     g,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -147,9 +148,55 @@ def about():
     return render_template("about.html")
 
 
+# 인사이트 목록 페이징 — 처음 몇 편을 서버가 그리고, 이후 몇 편씩 이어 붙일지
+INSIGHTS_INITIAL = 2
+INSIGHTS_STEP = 1
+
+
+def _clamp_int(raw, default, lo, hi):
+    try:
+        v = int(raw)
+    except (TypeError, ValueError):
+        v = default
+    return max(lo, min(v, hi))
+
+
 @site.route("/insights")
 def insights():
-    return render_template("insights.html")
+    total = len(INSIGHTS)
+    # JS 가 없을 때도 ?show=N 으로 더 볼 수 있게 한다.
+    show = _clamp_int(request.args.get("show"), INSIGHTS_INITIAL, 1, max(total, 1))
+    return render_template(
+        "insights.html",
+        shown=INSIGHTS[:show],
+        step=INSIGHTS_STEP,
+    )
+
+
+@site.route("/api/insights")
+def api_insights():
+    """
+    동적 로딩용. 카드 HTML 을 그대로 돌려주므로 마크업이 템플릿 한 곳에만 존재한다.
+    GET /api/insights?offset=2&limit=1  ·  영문은 /en/api/insights
+    """
+    total = len(INSIGHTS)
+    offset = _clamp_int(request.args.get("offset"), 0, 0, total)
+    limit = _clamp_int(request.args.get("limit"), INSIGHTS_STEP, 1, 12)
+
+    items = INSIGHTS[offset:offset + limit]
+    html = "".join(
+        render_template("_post_card.html", post=post, delay=0) for post in items
+    )
+    next_offset = offset + len(items)
+
+    return jsonify({
+        "html": html,
+        "count": len(items),
+        "offset": offset,
+        "next_offset": next_offset,
+        "remaining": total - next_offset,
+        "total": total,
+    })
 
 
 @site.route("/insights/<slug>")

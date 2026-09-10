@@ -72,6 +72,9 @@ body {
   overflow-x: hidden;
 }
 
+/* display 를 지정한 요소에도 hidden 속성이 먹도록 (.feed-foot 등) */
+[hidden] { display: none !important; }
+
 body.is-locked { overflow: hidden; }
 
 /* 페이지 전환 — 진입은 CSS 가, 이탈은 JS 가 담당 */
@@ -497,6 +500,55 @@ code { font-family: var(--mono); }
 .post__more svg { width: 15px; height: 15px; transition: transform var(--fast) var(--ease); }
 .post:hover .post__more svg { transform: translateX(4px); }
 .post__read { margin-left: auto; color: var(--text-3); }
+
+/* 인사이트 동적 로딩 */
+.feed { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+
+.feed-foot { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-top: clamp(36px, 4vw, 56px); }
+.feed-sentinel { width: 100%; height: 1px; }
+
+.feed-hint {
+  font-size: 13px; color: var(--text-3); letter-spacing: -.005em;
+  display: inline-flex; align-items: center; gap: 9px;
+  transition: opacity var(--fast) var(--ease);
+}
+.feed-hint::after {
+  content: ""; width: 13px; height: 13px; border-right: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor; transform: rotate(45deg) translate(-2px, -2px);
+  animation: feedNudge 1.8s var(--ease) infinite;
+}
+.feed-hint.is-dim { opacity: .35; }
+@keyframes feedNudge {
+  0%, 100% { transform: rotate(45deg) translate(-2px, -2px); opacity: .5; }
+  50%      { transform: rotate(45deg) translate(2px, 2px);   opacity: 1; }
+}
+
+.feed-more { position: relative; min-width: 210px; }
+.feed-more__count {
+  min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px;
+  display: inline-grid; place-items: center;
+  background: rgba(46, 107, 255, .18); border: 1px solid rgba(90, 141, 255, .32);
+  color: var(--blue-300); font-size: 12px; font-weight: 650; font-variant-numeric: tabular-nums;
+}
+.feed-more__spinner {
+  width: 15px; height: 15px; margin-right: -3px; border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .22); border-top-color: var(--blue-300);
+  display: none; animation: feedSpin .7s linear infinite;
+}
+.feed-more.is-loading { pointer-events: none; opacity: .75; }
+.feed-more.is-loading .feed-more__spinner { display: block; }
+.feed-more.is-loading .feed-more__count { display: none; }
+@keyframes feedSpin { to { transform: rotate(360deg); } }
+
+.feed-done, .feed-error {
+  margin-top: clamp(36px, 4vw, 56px); text-align: center; font-size: 13.5px;
+}
+.feed-done { color: var(--text-3); }
+.feed-done::before {
+  content: ""; display: block; width: 40px; height: 1px; margin: 0 auto 18px;
+  background: linear-gradient(90deg, transparent, var(--line-2), transparent);
+}
+.feed-error { color: #E8637A; margin-top: 18px; }
 
 /* 인사이트 본문 */
 .article { max-width: 760px; margin: clamp(40px, 5vw, 64px) auto 0; }

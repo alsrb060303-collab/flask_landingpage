@@ -91,29 +91,41 @@
 
 
   /* ------------------------------------------------------ 스크롤 리빌 */
-  function initReveal() {
-    var els = $$('.reveal');
+  // 나중에 붙는 요소(동적 로딩된 인사이트 카드 등)도 같은 옵저버를 쓰도록
+  // 모듈 스코프에 보관한다.
+  var revealIO = null;
+
+  function observeReveals(root) {
+    var scope = root || document;
+    var els = $$('.reveal:not(.is-in)', scope);
+    // root 자체가 .reveal 인 경우(동적으로 붙인 카드)도 포함시킨다
+    if (scope.nodeType === 1 && scope.matches && scope.matches('.reveal:not(.is-in)')) {
+      els.unshift(scope);
+    }
     if (!els.length) return;
 
-    if (reduced || !('IntersectionObserver' in window)) {
+    if (!revealIO) {
       els.forEach(function (el) { el.classList.add('is-in'); });
       return;
     }
-
     els.forEach(function (el) {
       var d = el.getAttribute('data-delay');
       if (d) el.style.setProperty('--reveal-delay', d + 'ms');
+      revealIO.observe(el);
     });
+  }
 
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        e.target.classList.add('is-in');
-        io.unobserve(e.target);
-      });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-
-    els.forEach(function (el) { io.observe(el); });
+  function initReveal() {
+    if (!reduced && 'IntersectionObserver' in window) {
+      revealIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          revealIO.unobserve(e.target);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    }
+    observeReveals(document);
   }
 
 
@@ -326,8 +338,34 @@
 
 
   /* -------------------------------------------------------- 페이지 전환 */
+  var fadeEnabled = false;
+
+  function bindFade(a) {
+    if (!fadeEnabled || a.__faded) return;
+    if (a.hasAttribute('data-no-fade')) return;
+
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return; }
+    if (url.origin !== window.location.origin) return;
+    if (a.target === '_blank' || (url.hash && url.pathname === window.location.pathname)) return;
+    if (/^(mailto|tel):/.test(a.getAttribute('href') || '')) return;
+
+    a.__faded = true;
+    on(a, 'click', function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      document.body.classList.add('is-leaving');
+      setTimeout(function () { window.location.href = a.href; }, 220);
+    });
+  }
+
+  function bindFadeIn(root) {
+    $$('a[href]', root || document).forEach(bindFade);
+  }
+
   function initPageFade() {
     if (reduced) return;
+    fadeEnabled = true;
 
     // 진입 시 페이드인은 CSS 애니메이션(body)이 담당한다.
     // 여기서는 나갈 때의 페이드아웃만 처리한다. JS 가 죽어도 화면은 항상 보인다.
@@ -335,20 +373,161 @@
       if (e.persisted) document.body.classList.remove('is-leaving');
     });
 
-    $$('a[href]').forEach(function (a) {
-      var url;
-      try { url = new URL(a.href, window.location.href); } catch (err) { return; }
-      if (url.origin !== window.location.origin) return;
-      if (a.target === '_blank' || url.hash && url.pathname === window.location.pathname) return;
-      if (/^(mailto|tel):/.test(a.getAttribute('href') || '')) return;
+    bindFadeIn(document);
+  }
 
-      on(a, 'click', function (e) {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-        e.preventDefault();
-        document.body.classList.add('is-leaving');
-        setTimeout(function () { window.location.href = a.href; }, 220);
-      });
+
+  /* ------------------------------------------------ 인사이트 동적 로딩 */
+  /*
+   * 서버가 처음 몇 편을 그려 두고, 나머지는 여기서 한 편씩 이어 붙인다.
+   *  · 아래로 스크롤해 센티넬에 닿으면 한 편
+   *  · "더보기" 를 누르면 한 편
+   * 한 편을 붙이면 센티넬이 화면 밖으로 밀려나므로, 다시 내려야 다음 편이 온다.
+   * JS 가 없으면 더보기 링크가 ?show=N 로 그냥 동작한다.
+   */
+  function initInsightFeed() {
+    var feed = $('#insightFeed');
+    var foot = $('#feedFoot');
+    if (!feed || !foot) return;
+
+    var moreBtn = $('#feedMore');
+    var sentinel = $('#feedSentinel');
+    var hint = $('#feedHint');
+    var doneEl = $('#feedDone');
+    var errEl = $('#feedError');
+    var countEl = $('.feed-more__count', moreBtn);
+
+    var endpoint = feed.getAttribute('data-endpoint');
+    var total = parseInt(feed.getAttribute('data-total'), 10) || 0;
+    var step = parseInt(feed.getAttribute('data-step'), 10) || 1;
+    var offset = parseInt(feed.getAttribute('data-offset'), 10) || 0;
+
+    var INTENT_PX = 110;     // 아래로 이만큼 움직여야 다음 한 편
+    var COOLDOWN = 700;      // 한 번의 플릭으로 여러 편이 쏟아지지 않게
+
+    var busy = false;
+    var intent = 0;          // 마지막 로딩 이후 아래로 움직인 양
+    var lastY = window.pageYOffset;
+    var cooldownUntil = 0;
+
+    function remaining() { return Math.max(0, total - offset); }
+
+    function syncFoot() {
+      var left = remaining();
+      if (countEl) countEl.textContent = left;
+      if (left <= 0) {
+        foot.hidden = true;
+        if (doneEl) doneEl.hidden = false;
+      }
+    }
+
+    function setBusy(state) {
+      busy = state;
+      moreBtn.classList.toggle('is-loading', state);
+      moreBtn.setAttribute('aria-busy', state ? 'true' : 'false');
+      if (hint) hint.classList.toggle('is-dim', state);
+    }
+
+    function load() {
+      if (busy || remaining() <= 0) return;
+
+      // 로딩을 시작하는 순간 트리거를 해제한다. 이렇게 해야 더보기 클릭과
+      // 스크롤 트리거가 겹쳐 두 편이 한꺼번에 들어오는 일이 없다.
+      intent = 0;
+      lastY = window.pageYOffset;
+      cooldownUntil = Date.now() + COOLDOWN;
+
+      setBusy(true);
+      if (errEl) errEl.hidden = true;
+
+      var url = endpoint + '?offset=' + offset + '&limit=' + step;
+
+      fetch(url, { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' })
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          if (!data || !data.count) { total = offset; syncFoot(); return; }
+
+          var first = feed.children.length;
+          feed.insertAdjacentHTML('beforeend', data.html);
+
+          // 새로 붙은 카드에만 리빌·페이드 처리를 걸어 준다
+          var added = Array.prototype.slice.call(feed.children, first);
+          added.forEach(function (el) {
+            observeReveals(el);
+            if (el.matches && el.matches('a[href]')) bindFade(el);
+            bindFadeIn(el);
+          });
+
+          offset = typeof data.next_offset === 'number' ? data.next_offset : offset + data.count;
+          if (typeof data.total === 'number') total = data.total;
+          syncFoot();
+
+          // 더보기 링크의 no-JS 폴백 주소도 최신 상태로 유지
+          moreBtn.setAttribute('href', moreBtn.pathname + '?show=' + (offset + step));
+        })
+        .catch(function () {
+          if (errEl) errEl.hidden = false;
+        })
+        .then(function () { setBusy(false); });
+    }
+
+    on(moreBtn, 'click', function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      load();
     });
+
+    /*
+     * 자동 로딩 트리거.
+     *
+     * IntersectionObserver 도, 스크롤 '위치' 비교도 쓸 수 없다.
+     * 카드가 그리드에 가로로 채워지면 문서 높이가 오히려 줄어들 수 있어서
+     * (2장 → 3장으로 한 줄에 들어차면서 카드가 낮아진다) "더 내려와야 한다" 는
+     * 조건이 영원히 충족되지 않고, 바닥에 붙은 뒤로는 scroll 이벤트 자체가 없다.
+     *
+     * 그래서 위치가 아니라 아래로 움직이려는 '의도' 를 누적한다.
+     *   · scroll  — 실제로 내려간 거리
+     *   · wheel   — 바닥에 닿아 더 안 내려가도 이벤트는 계속 온다
+     *   · touch   — 모바일에서 위로 미는 동작
+     * 조건: 누적 ≥ INTENT_PX · 쿨다운 경과 · 센티넬이 화면 아래 140px 안
+     */
+    function sentinelNear() {
+      return sentinel.getBoundingClientRect().top < window.innerHeight + 140;
+    }
+
+    function nudge(px) {
+      if (!sentinel || busy || remaining() <= 0) return;
+      if (px > 0) intent += px;
+      if (intent < INTENT_PX) return;
+      if (Date.now() < cooldownUntil) return;
+      if (sentinelNear()) load();
+    }
+
+    onScroll(function (y) {
+      var d = y - lastY;
+      lastY = y;
+      nudge(d);
+    });
+
+    on(window, 'wheel', function (e) {
+      if (e.deltaY > 0) nudge(Math.min(e.deltaY, 120));
+    }, { passive: true });
+
+    var touchY = null;
+    on(window, 'touchstart', function (e) {
+      touchY = e.touches && e.touches[0] ? e.touches[0].clientY : null;
+    }, { passive: true });
+    on(window, 'touchmove', function (e) {
+      if (touchY === null || !e.touches || !e.touches[0]) return;
+      var y = e.touches[0].clientY;
+      nudge(touchY - y);          // 손가락을 위로 밀면 아래로 내려가는 것
+      touchY = y;
+    }, { passive: true });
+
+    syncFoot();
   }
 
 
@@ -364,6 +543,7 @@
     initNav();
     initContactForm();
     initPageFade();
+    initInsightFeed();
   }
 
   if (document.readyState === 'loading') {

@@ -15,26 +15,38 @@
 <section class="section">
   <div class="container">
     {% if insights_list %}
-    <div class="post-grid">
-      {% for post in insights_list %}
-      {% set p = post[lang] %}
-      <a class="post reveal" data-delay="{{ loop.index0 * 60 }}" href="{{ u('insight_detail', slug=post.slug) }}">
-        {{ image(post.image, p.title, ratio='16 / 9') }}
-        <div class="post__body">
-          <p class="post__meta">
-            <span class="post__cat">{{ post.category }}</span>
-            <time datetime="{{ post.date }}">{{ post.date }}</time>
-            <span class="post__read">{{ post.read[lang] }}</span>
-          </p>
-          <h2>{{ p.title }}</h2>
-          <p class="post__excerpt">{{ p.excerpt }}</p>
-          <span class="post__more">{{ ip.read }}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"/></svg>
-          </span>
-        </div>
-      </a>
+
+    {#
+      서버가 먼저 shown 개수만큼 그려 준다. 나머지는 스크롤 또는 "더보기" 로
+      /api/insights 에서 한 편씩 받아 온다. JS 가 꺼져 있으면 아래 더보기 링크가
+      ?show=N 로 그냥 동작한다.
+    #}
+    <div class="feed"
+         id="insightFeed"
+         data-endpoint="{{ u('api_insights') }}"
+         data-offset="{{ shown | length }}"
+         data-total="{{ insights_list | length }}"
+         data-step="{{ step }}">
+      {% for post in shown %}
+        {% include "_post_card.html" %}
       {% endfor %}
     </div>
+
+    {% set remaining = (insights_list | length) - (shown | length) %}
+    <div class="feed-foot" id="feedFoot" {% if remaining <= 0 %}hidden{% endif %}>
+      <div class="feed-sentinel" id="feedSentinel" aria-hidden="true"></div>
+      <p class="feed-hint" id="feedHint">{{ ip.scroll_hint }}</p>
+      <a class="btn btn--ghost feed-more" id="feedMore" data-no-fade
+         href="{{ u('insights') }}?show={{ (shown | length) + step }}">
+        <span class="feed-more__spinner" aria-hidden="true"></span>
+        <span class="feed-more__label">{{ ip.more }}</span>
+        <span class="feed-more__count">{{ remaining }}</span>
+      </a>
+    </div>
+
+    <p class="feed-done" id="feedDone" {% if remaining > 0 %}hidden{% endif %}>{{ ip.done }}</p>
+    <p class="feed-error" id="feedError" hidden role="alert">{{ ip.error }}</p>
+
     {% else %}
     <div class="empty-state reveal">
       <span class="empty-state__icon" aria-hidden="true">
